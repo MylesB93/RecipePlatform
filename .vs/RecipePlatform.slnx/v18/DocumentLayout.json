@@ -1,0 +1,190 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\recipeplatform\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:recipeplatform\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{089100B1-113F-4E66-888A-E83F3999EAFD}|Solution Items{089100B1-113F-4E66-888A-E83F3999EAFD}|C:\\Users\\myles\\source\\repos\\RecipePlatform\\docker-compose.yml||{06C066C6-04A2-4E5D-8202-439FD4234EF1}",
+      "RelativeMoniker": "D:0:0:{089100B1-113F-4E66-888A-E83F3999EAFD}|Solution Items{089100B1-113F-4E66-888A-E83F3999EAFD}|solutionrelative:docker-compose.yml||{06C066C6-04A2-4E5D-8202-439FD4234EF1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\recipeplatform\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:recipeplatform\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\.dockerignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:.dockerignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\recipeplatform\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:recipeplatform\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\recipeplatform\\models\\updatereciperequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:recipeplatform\\models\\updatereciperequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\recipeplatform\\models\\createreciperequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:recipeplatform\\models\\createreciperequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\recipeplatform\\data\\dtos\\recipedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:recipeplatform\\data\\dtos\\recipedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\recipeplatform\\models\\recipe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:recipeplatform\\models\\recipe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|c:\\users\\myles\\source\\repos\\recipeplatform\\recipeplatform\\data\\recipedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FC85EAE-AE6E-E358-AACF-16C9CC9457C6}|RecipePlatform\\RecipePlatform.Api.csproj|solutionrelative:recipeplatform\\data\\recipedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": ".dockerignore",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\.dockerignore",
+              "RelativeDocumentMoniker": ".dockerignore",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\.dockerignore",
+              "RelativeToolTip": ".dockerignore",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAiwB0AAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-07-16T17:19:05.619Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UpdateRecipeRequest.cs",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Models\\UpdateRecipeRequest.cs",
+              "RelativeDocumentMoniker": "RecipePlatform\\Models\\UpdateRecipeRequest.cs",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Models\\UpdateRecipeRequest.cs",
+              "RelativeToolTip": "RecipePlatform\\Models\\UpdateRecipeRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T16:52:33.008Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "RecipeDto.cs",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Data\\DTOs\\RecipeDto.cs",
+              "RelativeDocumentMoniker": "RecipePlatform\\Data\\DTOs\\RecipeDto.cs",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Data\\DTOs\\RecipeDto.cs",
+              "RelativeToolTip": "RecipePlatform\\Data\\DTOs\\RecipeDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-13T17:40:43.053Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CreateRecipeRequest.cs",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Models\\CreateRecipeRequest.cs",
+              "RelativeDocumentMoniker": "RecipePlatform\\Models\\CreateRecipeRequest.cs",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Models\\CreateRecipeRequest.cs",
+              "RelativeToolTip": "RecipePlatform\\Models\\CreateRecipeRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-13T17:35:26.56Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Dockerfile",
+              "RelativeDocumentMoniker": "RecipePlatform\\Dockerfile",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Dockerfile",
+              "RelativeToolTip": "RecipePlatform\\Dockerfile",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAAB0AAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-07-11T14:59:07.186Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "docker-compose.yml",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\docker-compose.yml",
+              "RelativeDocumentMoniker": "docker-compose.yml",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\docker-compose.yml",
+              "RelativeToolTip": "docker-compose.yml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2026-07-11T14:58:12.188Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\appsettings.json",
+              "RelativeDocumentMoniker": "RecipePlatform\\appsettings.json",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\appsettings.json",
+              "RelativeToolTip": "RecipePlatform\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-07-11T14:57:07.937Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Program.cs",
+              "RelativeDocumentMoniker": "RecipePlatform\\Program.cs",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Program.cs",
+              "RelativeToolTip": "RecipePlatform\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAI4AAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-11T14:56:51.868Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Recipe.cs",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Models\\Recipe.cs",
+              "RelativeDocumentMoniker": "RecipePlatform\\Models\\Recipe.cs",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Models\\Recipe.cs",
+              "RelativeToolTip": "RecipePlatform\\Models\\Recipe.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-11T14:55:45.216Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "RecipeDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Data\\RecipeDbContext.cs",
+              "RelativeDocumentMoniker": "RecipePlatform\\Data\\RecipeDbContext.cs",
+              "ToolTip": "C:\\Users\\myles\\source\\repos\\RecipePlatform\\RecipePlatform\\Data\\RecipeDbContext.cs",
+              "RelativeToolTip": "RecipePlatform\\Data\\RecipeDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-11T14:55:36.137Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
