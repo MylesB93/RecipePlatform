@@ -11,7 +11,11 @@ builder.Services.AddDbContext<RecipeDbContext>(options =>
 		builder.Configuration.GetConnectionString("Postgres"));
 });
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 app.MapGet("/", () => "RecipePlatform API is running");
 
