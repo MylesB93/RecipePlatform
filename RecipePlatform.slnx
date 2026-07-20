@@ -2,5 +2,6 @@
   <Folder Name="/Solution Items/">
     <File Path="docker-compose.yml" />
   </Folder>
+  <Project Path="RecipePlatform.IntegrationTests/RecipePlatform.IntegrationTests.csproj" Id="353f1f11-c0d0-4c4d-ab8d-46aca8d9e52e" />
   <Project Path="RecipePlatform/RecipePlatform.Api.csproj" />
 </Solution>
