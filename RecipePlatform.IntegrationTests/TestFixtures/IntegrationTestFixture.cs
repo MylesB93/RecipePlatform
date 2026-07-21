@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Xunit;
 using RecipePlatform.Api.Data;
 using Testcontainers.PostgreSql;
 
@@ -25,35 +25,41 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 
 	public async Task InitializeAsync()
 	{
-		// Start the temporary PostgreSQL Docker container.
 		await _postgresContainer.StartAsync();
 
-		// Create a test version of the API.
+		var connectionString = _postgresContainer.GetConnectionString();
+
 		_factory = new WebApplicationFactory<Program>()
 			.WithWebHostBuilder(builder =>
 			{
 				builder.UseEnvironment("Testing");
 
-				builder.ConfigureServices(services =>
+				builder.ConfigureAppConfiguration((_, configuration) =>
 				{
-					// Remove the DbContext registration from Program.cs.
-					services.RemoveAll<DbContextOptions<RecipeDbContext>>();
-
-					// Replace it with a connection to the test container.
-					services.AddDbContext<RecipeDbContext>(options =>
-					{
-						options.UseNpgsql(
-							_postgresContainer.GetConnectionString());
-					});
+					configuration.AddInMemoryCollection(
+						new Dictionary<string, string?>
+						{
+							["ConnectionStrings:Postgres"] = connectionString
+						});
 				});
 			});
 
 		Client = _factory.CreateClient();
 
-		// Apply the application's EF Core migrations to the test database.
-		using IServiceScope scope = _factory.Services.CreateScope();
+		using var scope = _factory.Services.CreateScope();
 
-		RecipeDbContext dbContext =
+
+		var configuration =
+			scope.ServiceProvider.GetRequiredService<IConfiguration>();
+
+		var configuredConnectionString =
+			configuration.GetConnectionString("Postgres");
+
+		Console.WriteLine("CONFIGURED: " + configuredConnectionString);
+		Console.WriteLine("POSTGRES: " + _postgresContainer.GetConnectionString());
+
+
+		var dbContext =
 			scope.ServiceProvider.GetRequiredService<RecipeDbContext>();
 
 		await dbContext.Database.MigrateAsync();
