@@ -11,9 +11,7 @@ builder.Services.AddDbContext<RecipeDbContext>(options =>
 		builder.Configuration.GetConnectionString("Postgres"));
 });
 
-builder.Services.AddHealthChecks()
-	.AddNpgSql(
-		builder.Configuration.GetConnectionString("Postgres")!);
+builder.Services.AddHealthChecks().AddDbContextCheck<RecipeDbContext>();
 
 var app = builder.Build();
 
