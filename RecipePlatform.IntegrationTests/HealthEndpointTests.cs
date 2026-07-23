@@ -13,7 +13,7 @@ public sealed class HealthEndpointTests
 	}
 
 	[Fact]
-	public async Task GetHealth_WhenApplicationIsRunning_ReturnsOk() //TODO: figure out why this is failing
+	public async Task GetHealth_WhenApplicationIsRunning_ReturnsOk()
 	{
 		// Act
 		HttpResponseMessage response =
