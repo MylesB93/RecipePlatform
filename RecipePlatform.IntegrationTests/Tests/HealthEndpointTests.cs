@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace RecipePlatform.IntegrationTests;
+namespace RecipePlatform.IntegrationTests.Tests;
 
 public sealed class HealthEndpointTests
 	: IClassFixture<IntegrationTestFixture>
