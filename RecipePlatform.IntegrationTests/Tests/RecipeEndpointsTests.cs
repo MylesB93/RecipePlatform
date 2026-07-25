@@ -142,7 +142,7 @@ public sealed class RecipeEndpointsTests
 
 		// Assert
 		Assert.NotNull(updatedRecipe);
-		Assert.Equal(updatedRecipe.Name, recipe.Name);
+		Assert.Equal(updatedRecipe.Name, recipe?.Name);
 		Assert.Equal(updatedRecipe.Description, updateDescription);
 	}
 }
