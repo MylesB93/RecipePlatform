@@ -117,4 +117,32 @@ public sealed class RecipeEndpointsTests
 		// Assert
 		Assert.Equal(HttpStatusCode.NoContent, deletedResponse.StatusCode);
 	}
+
+	[Fact]
+	public async Task UpdateRecipe_WithUpdatedDescription_PersistsAndReturnsRecipe()
+	{
+		// Arrange
+		var createRequest = new CreateRecipeRequest("New Recipe", "This is a new recipe");
+
+		// Act
+		var createResponse = await _client.PostAsJsonAsync("/api/recipes", createRequest);
+
+		// Assert
+		Assert.NotNull(createResponse);
+		Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
+
+		// Arrange
+		var recipe = await createResponse.Content.ReadFromJsonAsync<RecipeResponse>();
+		var updateDescription = "This is an updated recipe.";
+		var updateRequest = new UpdateRecipeRequest("", updateDescription);
+
+		// Act
+		var updateResponse = await _client.PutAsJsonAsync($"/api/recipes/{recipe?.Id}", updateRequest);
+		var updatedRecipe = await updateResponse.Content.ReadFromJsonAsync<RecipeResponse>();
+
+		// Assert
+		Assert.NotNull(updatedRecipe);
+		Assert.Equal(updatedRecipe.Name, recipe.Name);
+		Assert.Equal(updatedRecipe.Description, updateDescription);
+	}
 }
