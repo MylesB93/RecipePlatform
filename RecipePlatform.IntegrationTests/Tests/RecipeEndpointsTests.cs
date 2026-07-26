@@ -145,4 +145,37 @@ public sealed class RecipeEndpointsTests
 		Assert.Equal(updatedRecipe.Name, recipe?.Name);
 		Assert.Equal(updatedRecipe.Description, updateDescription);
 	}
+
+	[Fact]
+	public async Task GetRecipes_WithValidRequest_ReturnsExpectedRecipes()
+	{
+		// Arrange
+		var steakRecipeRequest = new CreateRecipeRequest("Steak & Potatoes", "Sirloin steak with roast potatoes.");
+		var katsuRecipeRequest = new CreateRecipeRequest("Chicken Katsu", "Japanese-style chicken katsu with rice.");
+		var hotDogRecipeRequest = new CreateRecipeRequest("Hot Dogs", "Hot dog sausages in hot dog buns.");
+
+		// Act
+		var steakRecipeResponse = await _client.PostAsJsonAsync("/api/recipes/", steakRecipeRequest);
+		var katsuRecipeResponse = await _client.PostAsJsonAsync("/api/recipes/", katsuRecipeRequest);
+		var hotDogRecipeResponse = await _client.PostAsJsonAsync("/api/recipes/", hotDogRecipeRequest);
+
+		// Assert
+		Assert.NotNull(steakRecipeResponse);
+		Assert.NotNull(katsuRecipeResponse);
+		Assert.NotNull(hotDogRecipeResponse);
+		Assert.Equal(HttpStatusCode.Created, steakRecipeResponse.StatusCode);
+		Assert.Equal(HttpStatusCode.Created, katsuRecipeResponse.StatusCode);
+		Assert.Equal(HttpStatusCode.Created, hotDogRecipeResponse.StatusCode);
+
+		// Act
+		var recipesResponse = await _client.GetFromJsonAsync<List<RecipeResponse>>("/api/recipes/");
+
+		// Assert 
+		Assert.NotNull(recipesResponse);
+		Assert.NotEmpty(recipesResponse);
+		Assert.Equal(3, recipesResponse.Count);
+		Assert.Equal(steakRecipeRequest.Name, recipesResponse[0].Name);
+		Assert.Equal(katsuRecipeRequest.Name, recipesResponse[1].Name);
+		Assert.Equal(hotDogRecipeRequest.Name, recipesResponse[2].Name);
+	}
 }
