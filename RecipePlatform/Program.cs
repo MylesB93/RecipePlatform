@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using RecipePlatform.Api.Data;
 using RecipePlatform.Api.Data.DTOs;
+using RecipePlatform.Api.Interfaces;
 using RecipePlatform.Api.Models;
+using RecipePlatform.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,8 @@ builder.Services.AddDbContext<RecipeDbContext>(options =>
 
 builder.Services.AddHealthChecks().AddDbContextCheck<RecipeDbContext>();
 
+builder.Services.AddScoped<IRecipeService, RecipeService>();
+
 var app = builder.Build();
 
 app.MapHealthChecks("/health");
@@ -21,20 +25,10 @@ app.MapGet("/", () => "RecipePlatform API is running");
 
 app.MapGet(
 	"/api/recipes",
-	async (RecipeDbContext dbContext, CancellationToken cancellationToken) =>
+	async (RecipeDbContext dbContext, IRecipeService recipeService, CancellationToken cancellationToken) =>
 	{
-		var recipes = await dbContext.Recipes
-			.AsNoTracking()
-			.ToListAsync(cancellationToken);
-
-		var recipeDtos = recipes.Select(recipe => new RecipeDto
-		{
-			Id = recipe.Id,
-			Name = recipe.Name,
-			Description = recipe.Description
-		}).ToList();
-
-		return Results.Ok(recipeDtos);
+		var recipes = await recipeService.GetRecipesAsync(cancellationToken);
+		return Results.Ok(recipes);
 	});
 
 app.MapPost(
