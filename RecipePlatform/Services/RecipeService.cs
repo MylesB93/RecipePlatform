@@ -55,9 +55,19 @@ namespace RecipePlatform.Api.Services
 			return recipeDtos;
 		}
 
-		public async Task DeleteRecipeAsync()
+		public async Task<bool> DeleteRecipeAsync(Guid id, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			var recipe = await _recipeDbContext.Recipes
+			.SingleOrDefaultAsync(
+				x => x.Id == id,
+				cancellationToken);
+			if (recipe is null)
+			{
+				return false;
+			}
+			_recipeDbContext.Recipes.Remove(recipe);
+			await _recipeDbContext.SaveChangesAsync(cancellationToken);
+			return true;
 		}
 
 		public async Task<RecipeDto> UpdateRecipeAsync()

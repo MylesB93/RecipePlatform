@@ -88,19 +88,14 @@ app.MapDelete(
 	async (
 		Guid id,
 		RecipeDbContext dbContext,
-		CancellationToken cancellationToken) =>
+		CancellationToken cancellationToken,
+		IRecipeService recipeService) =>
 	{
-		var recipe = await dbContext.Recipes
-			.SingleOrDefaultAsync(
-				x => x.Id == id,
-				cancellationToken);
-		if (recipe is null)
-		{
-			return Results.NotFound();
-		}
-		dbContext.Recipes.Remove(recipe);
-		await dbContext.SaveChangesAsync(cancellationToken);
-		return Results.NoContent();
+		var recipe = await recipeService.DeleteRecipeAsync(id, cancellationToken);
+
+		return recipe ? 
+			Results.NoContent() : 
+			Results.NotFound();
 	});
 
 app.MapPut("/api/recipes/{id:guid}",
