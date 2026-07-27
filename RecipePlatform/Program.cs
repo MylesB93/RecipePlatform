@@ -73,26 +73,14 @@ app.MapGet(
 	async (
 		Guid id,
 		RecipeDbContext dbContext,
-		CancellationToken cancellationToken) =>
+		CancellationToken cancellationToken,
+		IRecipeService recipeService) =>
 	{
-		var recipe = await dbContext.Recipes
-			.AsNoTracking()
-			.SingleOrDefaultAsync(
-				x => x.Id == id,
-				cancellationToken);
-
-		var recipeDto = recipe is null
-			? null
-			: new RecipeDto
-			{
-				Id = recipe.Id,
-				Name = recipe.Name,
-				Description = recipe.Description
-			};
+		var recipe = await recipeService.GetRecipeAsync(id, cancellationToken);
 
 		return recipe is null
 			? Results.NotFound()
-			: Results.Ok(recipeDto);
+			: Results.Ok(recipe);
 	});
 
 app.MapDelete(

@@ -19,9 +19,24 @@ namespace RecipePlatform.Api.Services
 			throw new NotImplementedException();
 		}
 
-		public async Task<RecipeDto> GetRecipeAsync()
+		public async Task<RecipeDto?> GetRecipeAsync(Guid id, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			var recipe = await _recipeDbContext.Recipes
+			.AsNoTracking()
+			.SingleOrDefaultAsync(
+				x => x.Id == id,
+				cancellationToken);
+
+			var recipeDto = recipe is null
+				? null
+				: new RecipeDto
+				{
+					Id = recipe.Id,
+					Name = recipe.Name,
+					Description = recipe.Description
+				};
+
+			return recipeDto;
 		}
 
 		public async Task<List<RecipeDto>> GetRecipesAsync(CancellationToken cancellationToken)
