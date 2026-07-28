@@ -91,9 +91,9 @@ app.MapDelete(
 		CancellationToken cancellationToken,
 		IRecipeService recipeService) =>
 	{
-		var recipe = await recipeService.DeleteRecipeAsync(id, cancellationToken);
+		var isValidRecipe = await recipeService.DeleteRecipeAsync(id, cancellationToken);
 
-		return recipe ? 
+		return isValidRecipe ? 
 			Results.NoContent() : 
 			Results.NotFound();
 	});
@@ -102,25 +102,15 @@ app.MapPut("/api/recipes/{id:guid}",
 	async (Guid id,
 		UpdateRecipeRequest updateRecipeRequest,
 		RecipeDbContext dbContext,
-		CancellationToken cancellationToken) =>
+		CancellationToken cancellationToken,
+		IRecipeService recipeService) =>
 	{
-		var recipe = await dbContext.Recipes.SingleOrDefaultAsync(r => r.Id == id, cancellationToken);
+		var recipe = await recipeService.UpdateRecipeAsync(updateRecipeRequest, id, cancellationToken);
 		if (recipe == null)
 		{
 			return Results.NotFound();
 		}
 
-		if (!string.IsNullOrWhiteSpace(updateRecipeRequest.Name) && recipe.Name != updateRecipeRequest.Name)
-		{
-			recipe.Name = updateRecipeRequest.Name;
-		}
-
-		if (!string.IsNullOrWhiteSpace(updateRecipeRequest.Description) && recipe.Description != updateRecipeRequest.Description)
-		{
-			recipe.Description = updateRecipeRequest.Description;
-		}
-			
-		await dbContext.SaveChangesAsync(cancellationToken);
 		return Results.Ok(recipe);
 	});
 

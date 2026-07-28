@@ -8,6 +8,6 @@ namespace RecipePlatform.Api.Interfaces
 		public Task<RecipeDto?> GetRecipeAsync(Guid id, CancellationToken cancellationToken);
 		public Task<List<RecipeDto>> GetRecipesAsync(CancellationToken cancellationToken);
 		public Task<bool> DeleteRecipeAsync(Guid id, CancellationToken cancellationToken);
-		public Task<RecipeDto> UpdateRecipeAsync();
+		public Task<RecipeDto?> UpdateRecipeAsync(UpdateRecipeRequest updateRecipeRequest, Guid id, CancellationToken cancellationToken);
 	}
 }

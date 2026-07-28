@@ -2,6 +2,7 @@
 using RecipePlatform.Api.Data;
 using RecipePlatform.Api.Data.DTOs;
 using RecipePlatform.Api.Interfaces;
+using RecipePlatform.Api.Migrations;
 
 namespace RecipePlatform.Api.Services
 {
@@ -70,9 +71,29 @@ namespace RecipePlatform.Api.Services
 			return true;
 		}
 
-		public async Task<RecipeDto> UpdateRecipeAsync()
+		public async Task<RecipeDto?> UpdateRecipeAsync(UpdateRecipeRequest updateRecipeRequest, Guid id, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			var recipe = await _recipeDbContext.Recipes.SingleOrDefaultAsync(r => r.Id == id, cancellationToken);
+			if (recipe == null)
+			{
+				return null;
+			}
+
+			if (!string.IsNullOrWhiteSpace(updateRecipeRequest.Name) && recipe.Name != updateRecipeRequest.Name)
+			{
+				recipe.Name = updateRecipeRequest.Name;
+			}
+
+			if (!string.IsNullOrWhiteSpace(updateRecipeRequest.Description) && recipe.Description != updateRecipeRequest.Description)
+			{
+				recipe.Description = updateRecipeRequest.Description;
+			}
+
+			await _recipeDbContext.SaveChangesAsync(cancellationToken);
+
+			var recipeDto = new RecipeDto() { Name = recipe.Name, Description = recipe.Description };
+
+			return recipeDto;
 		}
 	}
 }
