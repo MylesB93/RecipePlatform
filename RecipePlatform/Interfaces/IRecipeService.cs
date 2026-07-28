@@ -1,10 +1,11 @@
 ﻿using RecipePlatform.Api.Data.DTOs;
+using RecipePlatform.Api.Models;
 
 namespace RecipePlatform.Api.Interfaces
 {
 	public interface IRecipeService
 	{
-		public Task<RecipeDto> CreateRecipeAsync();
+		public Task<RecipeDto> CreateRecipeAsync(CreateRecipeRequest createRecipeRequest, CancellationToken cancellationToken);
 		public Task<RecipeDto?> GetRecipeAsync(Guid id, CancellationToken cancellationToken);
 		public Task<List<RecipeDto>> GetRecipesAsync(CancellationToken cancellationToken);
 		public Task<bool> DeleteRecipeAsync(Guid id, CancellationToken cancellationToken);

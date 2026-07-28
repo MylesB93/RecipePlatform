@@ -3,6 +3,7 @@ using RecipePlatform.Api.Data;
 using RecipePlatform.Api.Data.DTOs;
 using RecipePlatform.Api.Interfaces;
 using RecipePlatform.Api.Migrations;
+using RecipePlatform.Api.Models;
 
 namespace RecipePlatform.Api.Services
 {
@@ -15,9 +16,26 @@ namespace RecipePlatform.Api.Services
 			_recipeDbContext = recipeDbContext;
 		}
 
-		public async Task<RecipeDto> CreateRecipeAsync()
+		public async Task<RecipeDto> CreateRecipeAsync(CreateRecipeRequest createRecipeRequest, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			var recipe = new Recipe
+			{
+				Id = Guid.NewGuid(),
+				Name = createRecipeRequest.Name.Trim(),
+				Description = createRecipeRequest.Description?.Trim()
+			};
+
+			_recipeDbContext.Recipes.Add(recipe);
+			await _recipeDbContext.SaveChangesAsync(cancellationToken);
+
+			var recipeDto = new RecipeDto
+			{
+				Id = recipe.Id,
+				Name = recipe.Name,
+				Description = recipe.Description
+			};
+
+			return recipeDto;
 		}
 
 		public async Task<RecipeDto?> GetRecipeAsync(Guid id, CancellationToken cancellationToken)

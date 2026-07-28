@@ -36,7 +36,8 @@ app.MapPost(
 	async (
 		CreateRecipeRequest request,
 		RecipeDbContext dbContext,
-		CancellationToken cancellationToken) =>
+		CancellationToken cancellationToken,
+		IRecipeService recipeService) =>
 	{
 		if (string.IsNullOrWhiteSpace(request.Name))
 		{
@@ -46,15 +47,7 @@ app.MapPost(
 			});
 		}
 
-		var recipe = new Recipe
-		{
-			Id = Guid.NewGuid(),
-			Name = request.Name.Trim(),
-			Description = request.Description?.Trim()
-		};
-
-		dbContext.Recipes.Add(recipe);
-		await dbContext.SaveChangesAsync(cancellationToken);
+		var recipe = await recipeService.CreateRecipeAsync(request, cancellationToken);
 
 		var recipeDto = new RecipeDto
 		{
