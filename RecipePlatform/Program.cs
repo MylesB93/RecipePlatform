@@ -25,8 +25,9 @@ app.MapGet("/", () => "RecipePlatform API is running");
 
 app.MapGet(
 	"/api/recipes",
-	async (RecipeDbContext dbContext, IRecipeService recipeService, CancellationToken cancellationToken) =>
+	async (RecipeDbContext dbContext, IRecipeService recipeService, CancellationToken cancellationToken, int pageSize = 10) =>
 	{
+		Console.WriteLine($"Page Size: {pageSize}"); // TODO: use pageSize to only return the necessary amount of recipes
 		var recipes = await recipeService.GetRecipesAsync(cancellationToken);
 		return Results.Ok(recipes);
 	});
