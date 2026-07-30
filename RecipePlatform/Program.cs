@@ -25,10 +25,9 @@ app.MapGet("/", () => "RecipePlatform API is running");
 
 app.MapGet(
 	"/api/recipes",
-	async (RecipeDbContext dbContext, IRecipeService recipeService, CancellationToken cancellationToken, int pageSize = 10) =>
+	async (IRecipeService recipeService, [AsParameters] GetRecipesQuery query, CancellationToken cancellationToken) =>
 	{
-		Console.WriteLine($"Page Size: {pageSize}"); // TODO: use pageSize to only return the necessary amount of recipes
-		var recipes = await recipeService.GetRecipesAsync(cancellationToken);
+		var recipes = await recipeService.GetRecipesAsync(query, cancellationToken);
 		return Results.Ok(recipes);
 	});
 
@@ -36,7 +35,6 @@ app.MapPost(
 	"/api/recipes",
 	async (
 		CreateRecipeRequest request,
-		RecipeDbContext dbContext,
 		CancellationToken cancellationToken,
 		IRecipeService recipeService) =>
 	{
@@ -66,7 +64,6 @@ app.MapGet(
 	"/api/recipes/{id:guid}",
 	async (
 		Guid id,
-		RecipeDbContext dbContext,
 		CancellationToken cancellationToken,
 		IRecipeService recipeService) =>
 	{
@@ -81,7 +78,6 @@ app.MapDelete(
 	"/api/recipes/{id:guid}",
 	async (
 		Guid id,
-		RecipeDbContext dbContext,
 		CancellationToken cancellationToken,
 		IRecipeService recipeService) =>
 	{
@@ -95,7 +91,6 @@ app.MapDelete(
 app.MapPut("/api/recipes/{id:guid}",
 	async (Guid id,
 		UpdateRecipeRequest updateRecipeRequest,
-		RecipeDbContext dbContext,
 		CancellationToken cancellationToken,
 		IRecipeService recipeService) =>
 	{

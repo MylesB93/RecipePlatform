@@ -58,13 +58,20 @@ namespace RecipePlatform.Api.Services
 			return recipeDto;
 		}
 
-		public async Task<List<RecipeDto>> GetRecipesAsync(CancellationToken cancellationToken)
+		public async Task<List<RecipeDto>> GetRecipesAsync(GetRecipesQuery query, CancellationToken cancellationToken)
 		{
-			var recipes = await _recipeDbContext.Recipes
-				.AsNoTracking()
-				.ToListAsync(cancellationToken);
+			var recipes = _recipeDbContext.Recipes
+				.AsNoTracking();				
 
-			var recipeDtos = recipes.Select(recipe => new RecipeDto
+			if (!string.IsNullOrWhiteSpace(query.Search)) // TODO: figure out why searching for recipe by name doesn't work
+			{
+				recipes = recipes.Where(recipe =>
+					recipe.Name.Contains(query.Search));
+			}
+
+			var result = await recipes.ToListAsync(cancellationToken);
+
+			var recipeDtos = result.Select(recipe => new RecipeDto
 			{
 				Id = recipe.Id,
 				Name = recipe.Name,
