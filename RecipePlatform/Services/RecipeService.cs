@@ -69,16 +69,17 @@ namespace RecipePlatform.Api.Services
 					EF.Functions.ILike(recipe.Name, $"%{query.Search}%"));
 			}
 
-			var result = await recipes.ToListAsync(cancellationToken);
+			var result = await recipes
+				.OrderByDescending(r => r.Name) // TODO: implement page and page size
+				.Select(recipe => new RecipeDto
+				{
+					Id = recipe.Id,
+					Name = recipe.Name,
+					Description = recipe.Description
+				})
+				.ToListAsync(cancellationToken);
 
-			var recipeDtos = result.Select(recipe => new RecipeDto
-			{
-				Id = recipe.Id,
-				Name = recipe.Name,
-				Description = recipe.Description
-			}).ToList();
-
-			return recipeDtos;
+			return result;
 		}
 
 		public async Task<bool> DeleteRecipeAsync(Guid id, CancellationToken cancellationToken)
