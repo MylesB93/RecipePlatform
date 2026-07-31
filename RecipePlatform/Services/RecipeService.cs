@@ -61,12 +61,12 @@ namespace RecipePlatform.Api.Services
 		public async Task<List<RecipeDto>> GetRecipesAsync(GetRecipesQuery query, CancellationToken cancellationToken)
 		{
 			var recipes = _recipeDbContext.Recipes
-				.AsNoTracking();				
+				.AsNoTracking();
 
-			if (!string.IsNullOrWhiteSpace(query.Search)) // TODO: figure out why searching for recipe by name doesn't work
+			if (!string.IsNullOrWhiteSpace(query.Search))
 			{
 				recipes = recipes.Where(recipe =>
-					recipe.Name.Contains(query.Search));
+					EF.Functions.ILike(recipe.Name, $"%{query.Search}%"));
 			}
 
 			var result = await recipes.ToListAsync(cancellationToken);
