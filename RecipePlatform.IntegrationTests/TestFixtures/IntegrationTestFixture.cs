@@ -76,4 +76,16 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 
 		await _postgresContainer.DisposeAsync();
 	}
+
+	public async Task ResetDatabaseAsync()
+	{
+		using IServiceScope scope = _factory.Services.CreateScope();
+
+		RecipeDbContext dbContext =
+			scope.ServiceProvider.GetRequiredService<RecipeDbContext>();
+
+		dbContext.Recipes.RemoveRange(dbContext.Recipes);
+
+		await dbContext.SaveChangesAsync();
+	}
 }

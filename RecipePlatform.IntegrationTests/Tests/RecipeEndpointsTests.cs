@@ -8,11 +8,23 @@ public sealed class RecipeEndpointsTests
 : IClassFixture<IntegrationTestFixture>
 {
 	private readonly HttpClient _client;
+	private readonly IntegrationTestFixture _fixture;
 
 	public RecipeEndpointsTests(
 		IntegrationTestFixture fixture)
 	{
-		_client = fixture.Client;
+		_fixture = fixture;
+		_client = _fixture.Client;
+	}
+
+	public async Task InitializeAsync()
+	{
+		await _fixture.ResetDatabaseAsync();
+	}
+
+	public Task DisposeAsync()
+	{
+		return Task.CompletedTask;
 	}
 
 	[Fact]
@@ -147,7 +159,7 @@ public sealed class RecipeEndpointsTests
 	}
 
 	[Fact]
-	public async Task GetRecipes_WithValidRequest_ReturnsExpectedRecipes()
+	public async Task GetRecipes_WithValidRequest_ReturnsExpectedRecipes() // TODO: figure out why this is failing
 	{
 		// Arrange
 		var steakRecipeRequest = new CreateRecipeRequest("Steak & Potatoes", "Sirloin steak with roast potatoes.");
@@ -178,4 +190,19 @@ public sealed class RecipeEndpointsTests
 		Assert.Equal(katsuRecipeRequest.Name, recipesResponse[1].Name);
 		Assert.Equal(hotDogRecipeRequest.Name, recipesResponse[2].Name);
 	}
+
+	// TODO: implement this
+	//[Fact]
+	//public async Task GetRecipes_WithSearchQueryParameter_ReturnsExpectedRecipes()
+	//{
+	//	// Arrange
+
+
+
+	//	// Act
+
+
+
+	//	// Assert
+	//}
 }
