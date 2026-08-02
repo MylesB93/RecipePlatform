@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 namespace RecipePlatform.IntegrationTests.Tests;
 
 public sealed class RecipeEndpointsTests
-: IClassFixture<IntegrationTestFixture>
+: IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
 	private readonly HttpClient _client;
 	private readonly IntegrationTestFixture _fixture;
