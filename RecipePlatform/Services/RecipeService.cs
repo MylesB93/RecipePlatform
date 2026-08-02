@@ -70,7 +70,7 @@ namespace RecipePlatform.Api.Services
 			}
 
 			var result = await recipes
-				.OrderByDescending(r => r.Name)
+				.OrderBy(r => r.Name)
 				.Skip((query.Page - 1) * query.PageSize)
 				.Take(query.PageSize)
 				.Select(recipe => new RecipeDto
