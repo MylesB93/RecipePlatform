@@ -186,9 +186,9 @@ public sealed class RecipeEndpointsTests
 		Assert.NotNull(recipesResponse);
 		Assert.NotEmpty(recipesResponse);
 		Assert.Equal(3, recipesResponse.Count);
-		Assert.Equal(steakRecipeRequest.Name, recipesResponse[0].Name);
-		Assert.Equal(katsuRecipeRequest.Name, recipesResponse[1].Name);
-		Assert.Equal(hotDogRecipeRequest.Name, recipesResponse[2].Name);
+		Assert.Equal(katsuRecipeRequest.Name, recipesResponse[0].Name);
+		Assert.Equal(hotDogRecipeRequest.Name, recipesResponse[1].Name);
+		Assert.Equal(steakRecipeRequest.Name, recipesResponse[2].Name);
 	}
 
 	// TODO: implement this
