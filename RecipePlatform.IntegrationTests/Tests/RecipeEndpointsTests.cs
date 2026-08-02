@@ -192,17 +192,28 @@ public sealed class RecipeEndpointsTests
 	}
 
 	// TODO: implement this
-	//[Fact]
-	//public async Task GetRecipes_WithSearchQueryParameter_ReturnsExpectedRecipes()
-	//{
-	//	// Arrange
+	[Fact]
+	public async Task GetRecipes_WithSearchQueryParameter_ReturnsExpectedRecipes()
+	{
+		// Arrange
+		var macRecipeRequest = new CreateRecipeRequest("Macaroni & Cheese", "Cooked macaroni with melted cheese.");
+		var pastaBakeRequest = new CreateRecipeRequest("Pasta Bake", "Cooked Penne pasta with cheese and tomato sauce.");
 
+		// Act
+		var macRecipeResponse = await _client.PostAsJsonAsync("/api/recipes", macRecipeRequest);
+		var pastaBakeResponse = await _client.PostAsJsonAsync("/api/recipes", pastaBakeRequest);
 
+		// Assert
+		Assert.NotNull(macRecipeResponse);
+		Assert.NotNull(pastaBakeResponse);
+		Assert.Equal(HttpStatusCode.Created, macRecipeResponse.StatusCode);
+		Assert.Equal(HttpStatusCode.Created, pastaBakeResponse.StatusCode);
 
-	//	// Act
+		// Arrange
+		var macQueryResponse = await _client.GetFromJsonAsync<List<RecipeResponse>>("/api/recipes?search=mac");
 
-
-
-	//	// Assert
-	//}
+		// Assert
+		Assert.NotNull(macQueryResponse);
+		Assert.Contains(macQueryResponse, recipe => recipe.Name == "Macaroni & Cheese");
+	}
 }
