@@ -191,7 +191,6 @@ public sealed class RecipeEndpointsTests
 		Assert.Equal(steakRecipeRequest.Name, recipesResponse[2].Name);
 	}
 
-	// TODO: implement this
 	[Fact]
 	public async Task GetRecipes_WithSearchQueryParameter_ReturnsExpectedRecipes()
 	{
