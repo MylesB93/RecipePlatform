@@ -246,4 +246,25 @@ public sealed class RecipeEndpointsTests
 		// Assert
 		Assert.Equal(2, recipesReponse?.Count);
 	}
+
+	// TODO: implement this
+	//[Fact]
+	//public async Task GetRecipes_WithPageQueryParameter_ReturnsExpectedRecipes()
+	//{
+	//	// Arrange
+
+	//	// Act
+
+	//	// Assert
+	//}
+
+	private async Task SeedRecipeDataAsync(IEnumerable<CreateRecipeRequest> recipes)
+	{
+		foreach (var recipe in recipes)
+		{
+			HttpResponseMessage response = await _client.PostAsJsonAsync("/api/recipes", recipe);
+
+			response.EnsureSuccessStatusCode();
+		}
+	}
 }
