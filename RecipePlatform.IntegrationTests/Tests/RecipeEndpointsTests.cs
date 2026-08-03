@@ -215,4 +215,35 @@ public sealed class RecipeEndpointsTests
 		Assert.NotNull(macQueryResponse);
 		Assert.Contains(macQueryResponse, recipe => recipe.Name == "Macaroni & Cheese");
 	}
+
+	[Fact]
+	public async Task GetRecipes_WithPageSizeQueryParameter_ReturnsExpectedNumberOfRecipes()
+	{
+		// Arrange
+		var recipeRequestOne = new CreateRecipeRequest("Recipe One", "This is the first recipe.");
+		var recipeRequestTwo = new CreateRecipeRequest("Recipe Two", "This is the second recipe.");
+		var recipeRequestThree = new CreateRecipeRequest("Recipe Three", "This is the three recipe.");
+		var recipeRequestFour = new CreateRecipeRequest("Recipe Four", "This is the four recipe.");
+		var recipeRequestFive = new CreateRecipeRequest("Recipe Five", "This is the five recipe.");
+
+		// Act
+		var recipeResponseOne = await _client.PostAsJsonAsync("/api/recipes", recipeRequestOne);
+		var recipeResponseTwo = await _client.PostAsJsonAsync("/api/recipes", recipeRequestTwo);
+		var recipeResponseThree = await _client.PostAsJsonAsync("/api/recipes", recipeRequestThree);
+		var recipeResponseFour = await _client.PostAsJsonAsync("/api/recipes", recipeRequestFour);
+		var recipeResponseFive = await _client.PostAsJsonAsync("/api/recipes", recipeRequestFive);
+
+		// Assert
+		Assert.Equal(HttpStatusCode.Created, recipeResponseOne.StatusCode);
+		Assert.Equal(HttpStatusCode.Created, recipeResponseTwo.StatusCode);
+		Assert.Equal(HttpStatusCode.Created, recipeResponseThree.StatusCode);
+		Assert.Equal(HttpStatusCode.Created, recipeResponseFour.StatusCode);
+		Assert.Equal(HttpStatusCode.Created, recipeResponseFive.StatusCode);
+
+		// Act
+		var recipesReponse = await _client.GetFromJsonAsync<List<RecipeResponse>>("/api/recipes?pageSize=2");
+
+		// Assert
+		Assert.Equal(2, recipesReponse?.Count);
+	}
 }
