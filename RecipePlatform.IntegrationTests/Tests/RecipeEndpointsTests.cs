@@ -247,16 +247,27 @@ public sealed class RecipeEndpointsTests
 		Assert.Equal(2, recipesReponse?.Count);
 	}
 
-	// TODO: implement this
-	//[Fact]
-	//public async Task GetRecipes_WithPageQueryParameter_ReturnsExpectedRecipes()
-	//{
-	//	// Arrange
+	[Fact]
+	public async Task GetRecipes_WithPageQueryParameter_ReturnsExpectedRecipes()
+	{
+		// Arrange
+		var recipeRequestOne = new CreateRecipeRequest("Recipe A", "This is the first recipe.");
+		var recipeRequestTwo = new CreateRecipeRequest("Recipe B", "This is the second recipe.");
+		var recipeRequestThree = new CreateRecipeRequest("Recipe C", "This is the three recipe.");
+		var recipes = new List<CreateRecipeRequest>();
+		recipes.Add(recipeRequestOne);
+		recipes.Add(recipeRequestTwo);
+		recipes.Add(recipeRequestThree);
 
-	//	// Act
+		// Act
+		await SeedRecipeDataAsync(recipes);
+		var recipeResponse = await _client.GetFromJsonAsync<List<RecipeResponse>>("/api/recipes?pageSize=1&page=2");
 
-	//	// Assert
-	//}
+		// Assert
+		Assert.NotNull(recipeResponse);
+		Assert.Single(recipeResponse);
+		Assert.Equal("Recipe B", recipeResponse?.FirstOrDefault()?.Name);
+	}
 
 	private async Task SeedRecipeDataAsync(IEnumerable<CreateRecipeRequest> recipes)
 	{
