@@ -3,5 +3,6 @@
     <File Path="docker-compose.yml" />
   </Folder>
   <Project Path="RecipePlatform.IntegrationTests/RecipePlatform.IntegrationTests.csproj" Id="353f1f11-c0d0-4c4d-ab8d-46aca8d9e52e" />
+  <Project Path="RecipePlatform.UnitTests/RecipePlatform.UnitTests.csproj" Id="5517af69-2679-4843-8975-fa378a83acc7" />
   <Project Path="RecipePlatform/RecipePlatform.Api.csproj" />
 </Solution>
