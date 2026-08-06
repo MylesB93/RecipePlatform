@@ -128,6 +128,11 @@ public sealed class RecipeEndpointsTests
 
 		// Assert
 		Assert.Equal(HttpStatusCode.NoContent, deletedResponse.StatusCode);
+
+		HttpResponseMessage getResponse =
+			await _client.GetAsync($"/api/recipes/{deletedRecipe?.Id}");
+
+		Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
 	}
 
 	[Fact]
@@ -150,12 +155,26 @@ public sealed class RecipeEndpointsTests
 
 		// Act
 		var updateResponse = await _client.PutAsJsonAsync($"/api/recipes/{recipe?.Id}", updateRequest);
+		Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
+
 		var updatedRecipe = await updateResponse.Content.ReadFromJsonAsync<RecipeResponse>();
 
 		// Assert
 		Assert.NotNull(updatedRecipe);
 		Assert.Equal(updatedRecipe.Name, recipe?.Name);
 		Assert.Equal(updatedRecipe.Description, updateDescription);
+
+		HttpResponseMessage getResponse =
+			await _client.GetAsync($"/api/recipes/{recipe?.Id}");
+
+		Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+
+		RecipeResponse? persistedRecipe =
+			await getResponse.Content.ReadFromJsonAsync<RecipeResponse>();
+
+		Assert.NotNull(persistedRecipe);
+		Assert.Equal(recipe?.Name, persistedRecipe.Name);
+		Assert.Equal(updateDescription, persistedRecipe.Description);
 	}
 
 	[Fact]
