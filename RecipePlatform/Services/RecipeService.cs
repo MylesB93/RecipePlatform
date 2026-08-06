@@ -119,7 +119,12 @@ namespace RecipePlatform.Api.Services
 
 			await _recipeDbContext.SaveChangesAsync(cancellationToken);
 
-			var recipeDto = new RecipeDto() { Name = recipe.Name, Description = recipe.Description };
+			var recipeDto = new RecipeDto()
+			{
+				Id = recipe.Id,
+				Name = recipe.Name,
+				Description = recipe.Description
+			};
 
 			return recipeDto;
 		}
