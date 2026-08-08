@@ -6,6 +6,7 @@ RecipePlatform is a .NET 10 minimal API for creating, retrieving, updating, dele
 
 - [.NET SDK 10](https://dotnet.microsoft.com/download/dotnet/10.0)
 - PostgreSQL 17, running locally
+- Redis 7, running locally
 - Docker Desktop, if you want to run the integration tests or the supplied containers
 
 ## Run locally
@@ -14,6 +15,7 @@ RecipePlatform is a .NET 10 minimal API for creating, retrieving, updating, dele
 
    ```powershell
    $env:ConnectionStrings__Postgres = "Host=localhost;Port=5432;Database=recipes;Username=postgres;Password=postgres"
+   $env:ConnectionStrings__Redis = "localhost:6379"
    ```
 
 2. Restore dependencies and apply the Entity Framework migrations:
@@ -69,9 +71,15 @@ dotnet test RecipePlatform.IntegrationTests/RecipePlatform.IntegrationTests.cspr
 
 The integration tests use Testcontainers to start PostgreSQL, so Docker Desktop must be running.
 
+## Caching
+
+Recipe reads use Redis with a cache-aside strategy. Individual recipes are cached for 10 minutes and paged/search results for one minute. Creating, updating, or deleting a recipe updates or removes the item cache and invalidates all list/search results through a cache-generation key.
+
+Set `ConnectionStrings__Redis` to override the Redis connection string. When the API runs through Docker Compose, it uses the included `redis` service automatically.
+
 ## Containers
 
-The repository includes a `docker-compose.yml` with an API service and PostgreSQL 17:
+The repository includes a `docker-compose.yml` with an API service, PostgreSQL 17, and Redis 7. Redis data is stored in the `redis-data` Docker volume.
 
 ```powershell
 docker compose up --build

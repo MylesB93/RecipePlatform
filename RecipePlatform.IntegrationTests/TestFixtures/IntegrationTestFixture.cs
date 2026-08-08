@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RecipePlatform.Api.Data;
 using Testcontainers.PostgreSql;
+using Testcontainers.Redis;
 
 namespace RecipePlatform.IntegrationTests;
 
@@ -18,6 +19,8 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 			.WithUsername("postgres")
 			.WithPassword("postgres")
 			.Build();
+	private readonly RedisContainer _redisContainer =
+		new RedisBuilder("redis:7-alpine").Build();
 
 	private WebApplicationFactory<Program>? _factory;
 
@@ -26,6 +29,7 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 	public async Task InitializeAsync()
 	{
 		await _postgresContainer.StartAsync();
+		await _redisContainer.StartAsync();
 
 		var connectionString = _postgresContainer.GetConnectionString();
 
@@ -39,7 +43,8 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 					configuration.AddInMemoryCollection(
 						new Dictionary<string, string?>
 						{
-							["ConnectionStrings:Postgres"] = connectionString
+							["ConnectionStrings:Postgres"] = connectionString,
+							["ConnectionStrings:Redis"] = _redisContainer.GetConnectionString()
 						});
 				});
 			});
@@ -75,6 +80,7 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 		}
 
 		await _postgresContainer.DisposeAsync();
+		await _redisContainer.DisposeAsync();
 	}
 
 	public async Task ResetDatabaseAsync()

@@ -13,9 +13,26 @@ builder.Services.AddDbContext<RecipeDbContext>(options =>
 		builder.Configuration.GetConnectionString("Postgres"));
 });
 
-builder.Services.AddHealthChecks().AddDbContextCheck<RecipeDbContext>();
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 
-builder.Services.AddScoped<IRecipeService, RecipeService>();
+if (!string.IsNullOrWhiteSpace(redisConnectionString))
+{
+	builder.Services.AddStackExchangeRedisCache(options =>
+	{
+		options.Configuration = redisConnectionString;
+		options.InstanceName = "recipe-platform:";
+	});
+}
+
+var healthChecks = builder.Services.AddHealthChecks().AddDbContextCheck<RecipeDbContext>();
+
+if (!string.IsNullOrWhiteSpace(redisConnectionString))
+{
+	healthChecks.AddRedis(redisConnectionString, name: "redis");
+}
+
+builder.Services.AddScoped<RecipeService>();
+builder.Services.AddScoped<IRecipeService, CachedRecipeService>();
 
 var app = builder.Build();
 
