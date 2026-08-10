@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -47,6 +49,16 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 							["ConnectionStrings:Redis"] = _redisContainer.GetConnectionString()
 						});
 				});
+
+				builder.ConfigureTestServices(services =>
+				{
+					services.RemoveAll<IDistributedCache>();
+					services.AddStackExchangeRedisCache(options =>
+					{
+						options.Configuration = _redisContainer.GetConnectionString();
+						options.InstanceName = "recipe-platform:";
+					});
+				});
 			});
 
 		Client = _factory.CreateClient();
@@ -60,8 +72,10 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 		var configuredConnectionString =
 			configuration.GetConnectionString("Postgres");
 
-		Console.WriteLine("CONFIGURED: " + configuredConnectionString);
+		Console.WriteLine("CONFIGURED POSTGRES: " + configuredConnectionString);
 		Console.WriteLine("POSTGRES: " + _postgresContainer.GetConnectionString());
+		Console.WriteLine("CONFIGURED REDIS: " + configuration.GetConnectionString("Redis"));
+		Console.WriteLine("REDIS: " + _redisContainer.GetConnectionString());
 
 
 		var dbContext =
