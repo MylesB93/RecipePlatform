@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RecipePlatform.Api.Data;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
@@ -58,6 +59,15 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 						options.Configuration = _redisContainer.GetConnectionString();
 						options.InstanceName = "recipe-platform:";
 					});
+
+					services.Configure<HealthCheckServiceOptions>(options =>
+					{
+						options.Registrations.Clear();
+					});
+
+					services.AddHealthChecks()
+						.AddDbContextCheck<RecipeDbContext>()
+						.AddRedis(_redisContainer.GetConnectionString(), name: "redis");
 				});
 			});
 
