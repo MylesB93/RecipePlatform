@@ -4,8 +4,20 @@ using RecipePlatform.Api.Data.DTOs;
 using RecipePlatform.Api.Interfaces;
 using RecipePlatform.Api.Models;
 using RecipePlatform.Api.Services;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Compact;
+
+Log.Logger = new LoggerConfiguration().WriteTo.Console(new RenderedCompactJsonFormatter()).CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, configuration) => configuration
+	.ReadFrom.Configuration(context.Configuration)
+	.ReadFrom.Services(services)
+	.Enrich.FromLogContext()
+	.Enrich.WithProperty("Application", "RecipePlatform")
+	.WriteTo.Console(new RenderedCompactJsonFormatter()));
 
 builder.Services.AddDbContext<RecipeDbContext>(options =>
 {
@@ -36,6 +48,18 @@ builder.Services.AddScoped<IRecipeService, CachedRecipeService>();
 
 var app = builder.Build();
 
+app.UseExceptionHandler(errorApp => errorApp.Run(async context =>
+{
+	Exception? exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+	Log.Error(exception, "Unhandled request failure. {RequestMethod} {RequestPath} {TraceId}", context.Request.Method, context.Request.Path, context.TraceIdentifier);
+	await Results.Problem(statusCode: StatusCodes.Status500InternalServerError).ExecuteAsync(context);
+}));
+
+app.UseSerilogRequestLogging(options =>
+{
+	options.GetLevel = (_, elapsed, exception) => exception is not null || elapsed > 1_000 ? LogEventLevel.Warning : LogEventLevel.Information;
+});
+
 app.MapHealthChecks("/health");
 
 app.MapGet("/", () => "RecipePlatform API is running");
@@ -57,6 +81,7 @@ app.MapPost(
 	{
 		if (string.IsNullOrWhiteSpace(request.Name))
 		{
+			Log.Warning("Recipe creation rejected because the name was blank.");
 			return Results.BadRequest(new
 			{
 				error = "Recipe name is required."

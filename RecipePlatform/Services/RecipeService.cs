@@ -4,6 +4,7 @@ using RecipePlatform.Api.Data.DTOs;
 using RecipePlatform.Api.Interfaces;
 using RecipePlatform.Api.Migrations;
 using RecipePlatform.Api.Models;
+using Serilog;
 
 namespace RecipePlatform.Api.Services
 {
@@ -55,6 +56,11 @@ namespace RecipePlatform.Api.Services
 					Description = recipe.Description
 				};
 
+			if (recipeDto is null)
+			{
+				Log.Information("Recipe was not found. {RecipeId}", id);
+			}
+
 			return recipeDto;
 		}
 
@@ -92,6 +98,7 @@ namespace RecipePlatform.Api.Services
 				cancellationToken);
 			if (recipe is null)
 			{
+				Log.Information("Recipe could not be deleted because it was not found. {RecipeId}", id);
 				return false;
 			}
 			_recipeDbContext.Recipes.Remove(recipe);
@@ -104,6 +111,7 @@ namespace RecipePlatform.Api.Services
 			var recipe = await _recipeDbContext.Recipes.SingleOrDefaultAsync(r => r.Id == id, cancellationToken);
 			if (recipe == null)
 			{
+				Log.Information("Recipe could not be updated because it was not found. {RecipeId}", id);
 				return null;
 			}
 
