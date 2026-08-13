@@ -8,8 +8,6 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
 
-Log.Logger = new LoggerConfiguration().WriteTo.Console(new RenderedCompactJsonFormatter()).CreateBootstrapLogger();
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, services, configuration) => configuration
@@ -17,7 +15,8 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 	.ReadFrom.Services(services)
 	.Enrich.FromLogContext()
 	.Enrich.WithProperty("Application", "RecipePlatform")
-	.WriteTo.Console(new RenderedCompactJsonFormatter()));
+	.WriteTo.Console(new RenderedCompactJsonFormatter()),
+	preserveStaticLogger: true);
 
 builder.Services.AddDbContext<RecipeDbContext>(options =>
 {
