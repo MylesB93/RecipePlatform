@@ -77,6 +77,10 @@ Recipe reads use Redis with a cache-aside strategy. Individual recipes are cache
 
 Set `ConnectionStrings__Redis` to override the Redis connection string. When the API runs through Docker Compose, it uses the included `redis` service automatically.
 
+## Logging
+
+The API writes structured JSON logs to standard output with Serilog. Request completion, rejected recipe creation requests, missing recipes, cache activity, and unhandled failures include structured properties suitable for container log collection.
+
 ## Containers
 
 The repository includes a `docker-compose.yml` with an API service, PostgreSQL 17, and Redis 7. Redis data is stored in the `redis-data` Docker volume.
