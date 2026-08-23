@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RecipePlatform.Api.Data;
 using RecipePlatform.Api.Data.DTOs;
 using RecipePlatform.Api.Interfaces;
@@ -23,6 +24,28 @@ builder.Services.AddDbContext<RecipeDbContext>(options =>
 	options.UseNpgsql(
 		builder.Configuration.GetConnectionString("Postgres"));
 });
+
+var tenantId = builder.Configuration["Authentication:TenantId"];
+var audience = builder.Configuration["Authentication:Audience"];
+
+builder.Services
+	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer(options =>
+	{
+		options.Authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
+		options.Audience = audience;
+		options.MapInboundClaims = false;
+		options.Events = new JwtBearerEvents
+		{
+			OnAuthenticationFailed = context =>
+			{
+				Log.Warning(context.Exception, "Bearer token validation failed.");
+				return Task.CompletedTask;
+			}
+		};
+	});
+
+builder.Services.AddAuthorization();
 
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 
@@ -59,6 +82,9 @@ app.UseSerilogRequestLogging(options =>
 	options.GetLevel = (_, elapsed, exception) => exception is not null || elapsed > 1_000 ? LogEventLevel.Warning : LogEventLevel.Information;
 });
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapHealthChecks("/health");
 
 app.MapGet("/", () => "RecipePlatform API is running");
@@ -69,7 +95,8 @@ app.MapGet(
 	{
 		var recipes = await recipeService.GetRecipesAsync(query, cancellationToken);
 		return Results.Ok(recipes);
-	});
+	})
+	.RequireAuthorization();
 
 app.MapPost(
 	"/api/recipes",
@@ -113,7 +140,8 @@ app.MapGet(
 		return recipe is null
 			? Results.NotFound()
 			: Results.Ok(recipe);
-	});
+	})
+	.RequireAuthorization();
 
 app.MapDelete(
 	"/api/recipes/{id:guid}",

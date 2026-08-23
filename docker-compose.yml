@@ -10,6 +10,8 @@ services:
       ASPNETCORE_HTTP_PORTS: 8080
       ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=recipes;Username=postgres;Password=postgres
       ConnectionStrings__Redis: redis:6379
+      Authentication__TenantId: ${Authentication__TenantId}
+      Authentication__Audience: ${Authentication__Audience}
     depends_on:
       postgres:
         condition: service_healthy
