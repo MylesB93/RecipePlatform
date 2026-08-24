@@ -45,7 +45,17 @@ builder.Services
 		};
 	});
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+	options.AddPolicy("RecipesRead", policy =>
+	{
+		policy.RequireAuthenticatedUser();
+		policy.RequireAssertion(context =>
+			context.User.FindFirst("scp")?.Value
+				.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+				.Contains("recipes.read", StringComparer.Ordinal) == true);
+	});
+});
 
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 
