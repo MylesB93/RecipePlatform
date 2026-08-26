@@ -106,7 +106,7 @@ app.MapGet(
 		var recipes = await recipeService.GetRecipesAsync(query, cancellationToken);
 		return Results.Ok(recipes);
 	})
-	.RequireAuthorization();
+	.RequireAuthorization("RecipesRead");
 
 app.MapPost(
 	"/api/recipes",
@@ -151,7 +151,7 @@ app.MapGet(
 			? Results.NotFound()
 			: Results.Ok(recipe);
 	})
-	.RequireAuthorization();
+	.RequireAuthorization("RecipesRead");
 
 app.MapDelete(
 	"/api/recipes/{id:guid}",
