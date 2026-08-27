@@ -35,6 +35,7 @@ builder.Services
 		options.Authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
 		options.Audience = audience;
 		options.MapInboundClaims = false;
+		options.TokenValidationParameters.RoleClaimType = "roles";
 		options.Events = new JwtBearerEvents
 		{
 			OnAuthenticationFailed = context =>
@@ -54,6 +55,16 @@ builder.Services.AddAuthorization(options =>
 			context.User.FindFirst("scp")?.Value
 				.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
 				.Contains("recipes.read", StringComparer.Ordinal) == true);
+	});
+
+	options.AddPolicy("RecipesWrite", policy =>
+	{
+		policy.RequireAuthenticatedUser();
+		policy.RequireRole("RecipeWriter");
+		policy.RequireAssertion(context =>
+			context.User.FindFirst("scp")?.Value
+				.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+				.Contains("recipes.write", StringComparer.Ordinal) == true);
 	});
 });
 
@@ -136,7 +147,8 @@ app.MapPost(
 		return Results.Created(
 			$"/api/recipes/{recipe.Id}",
 			recipeDto);
-	});
+	})
+	.RequireAuthorization("RecipesWrite");
 
 app.MapGet(
 	"/api/recipes/{id:guid}",

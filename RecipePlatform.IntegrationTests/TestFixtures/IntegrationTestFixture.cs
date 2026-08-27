@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -53,6 +54,15 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 
 				builder.ConfigureTestServices(services =>
 				{
+					services.AddAuthentication(options =>
+					{
+						options.DefaultAuthenticateScheme = TestAuthenticationHandler.SchemeName;
+						options.DefaultChallengeScheme = TestAuthenticationHandler.SchemeName;
+					})
+					.AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+						TestAuthenticationHandler.SchemeName,
+						_ => { });
+
 					services.RemoveAll<IDistributedCache>();
 					services.AddStackExchangeRedisCache(options =>
 					{
