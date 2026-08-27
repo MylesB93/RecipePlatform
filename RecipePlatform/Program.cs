@@ -192,6 +192,7 @@ app.MapPut("/api/recipes/{id:guid}",
 		}
 
 		return Results.Ok(recipe);
-	});
+	})
+	.RequireAuthorization("RecipesWrite");
 
 app.Run();
