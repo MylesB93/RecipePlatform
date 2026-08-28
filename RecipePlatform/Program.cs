@@ -177,7 +177,8 @@ app.MapDelete(
 		return isValidRecipe ? 
 			Results.NoContent() : 
 			Results.NotFound();
-	});
+	})
+	.RequireAuthorization("RecipesWrite");
 
 app.MapPut("/api/recipes/{id:guid}",
 	async (Guid id,
