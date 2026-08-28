@@ -85,11 +85,18 @@ The API writes structured JSON logs to standard output with Serilog. Request com
 
 The repository includes a `docker-compose.yml` with an API service, PostgreSQL 17, and Redis 7. Redis data is stored in the `redis-data` Docker volume.
 
+Before starting the containers, set the Entra tenant ID and API audience in the same PowerShell session. The audience is the RecipePlatform API application's client ID (without the `api://` prefix):
+
+```powershell
+$env:Authentication__TenantId = "<tenant-id>"
+$env:Authentication__Audience = "<api-application-client-id>"
+```
+
 ```powershell
 docker compose up --build
 ```
 
-This exposes the API on `http://localhost:8080`. The API does not currently apply Entity Framework migrations at startup, so apply the migrations before using recipe endpoints when running outside the test suite.
+This exposes the API on `http://localhost:8080`. These PowerShell environment variables are session-specific, so set them again before starting Compose from a new terminal. The API does not currently apply Entity Framework migrations at startup, so apply the migrations before using recipe endpoints when running outside the test suite.
 
 ## Continuous integration
 
