@@ -35,6 +35,7 @@ builder.Services
 		options.Authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
 		options.Audience = audience;
 		options.MapInboundClaims = false;
+		options.TokenValidationParameters.RoleClaimType = "roles";
 		options.Events = new JwtBearerEvents
 		{
 			OnAuthenticationFailed = context =>
@@ -45,7 +46,27 @@ builder.Services
 		};
 	});
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+	options.AddPolicy("RecipesRead", policy =>
+	{
+		policy.RequireAuthenticatedUser();
+		policy.RequireAssertion(context =>
+			context.User.FindFirst("scp")?.Value
+				.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+				.Contains("recipes.read", StringComparer.Ordinal) == true);
+	});
+
+	options.AddPolicy("RecipesWrite", policy =>
+	{
+		policy.RequireAuthenticatedUser();
+		policy.RequireRole("RecipeWriter");
+		policy.RequireAssertion(context =>
+			context.User.FindFirst("scp")?.Value
+				.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+				.Contains("recipes.write", StringComparer.Ordinal) == true);
+	});
+});
 
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 
@@ -96,7 +117,7 @@ app.MapGet(
 		var recipes = await recipeService.GetRecipesAsync(query, cancellationToken);
 		return Results.Ok(recipes);
 	})
-	.RequireAuthorization();
+	.RequireAuthorization("RecipesRead");
 
 app.MapPost(
 	"/api/recipes",
@@ -126,7 +147,8 @@ app.MapPost(
 		return Results.Created(
 			$"/api/recipes/{recipe.Id}",
 			recipeDto);
-	});
+	})
+	.RequireAuthorization("RecipesWrite");
 
 app.MapGet(
 	"/api/recipes/{id:guid}",
@@ -141,7 +163,7 @@ app.MapGet(
 			? Results.NotFound()
 			: Results.Ok(recipe);
 	})
-	.RequireAuthorization();
+	.RequireAuthorization("RecipesRead");
 
 app.MapDelete(
 	"/api/recipes/{id:guid}",
@@ -155,7 +177,8 @@ app.MapDelete(
 		return isValidRecipe ? 
 			Results.NoContent() : 
 			Results.NotFound();
-	});
+	})
+	.RequireAuthorization("RecipesWrite");
 
 app.MapPut("/api/recipes/{id:guid}",
 	async (Guid id,
@@ -170,6 +193,7 @@ app.MapPut("/api/recipes/{id:guid}",
 		}
 
 		return Results.Ok(recipe);
-	});
+	})
+	.RequireAuthorization("RecipesWrite");
 
 app.Run();
