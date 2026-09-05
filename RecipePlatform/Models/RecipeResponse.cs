@@ -3,5 +3,6 @@
 	public sealed record RecipeResponse(
 		Guid Id,
 		string Name,
-		string Description);
+		string Description,
+		Guid Version);
 }
