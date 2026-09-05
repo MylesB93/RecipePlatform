@@ -1,3 +1,4 @@
 ﻿public sealed record UpdateRecipeRequest(
 	string Name,
-	string? Description);
+	string? Description,
+	Guid Version);

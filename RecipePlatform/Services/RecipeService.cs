@@ -33,7 +33,8 @@ namespace RecipePlatform.Api.Services
 			{
 				Id = recipe.Id,
 				Name = recipe.Name,
-				Description = recipe.Description
+				Description = recipe.Description,
+				Version = recipe.Version
 			};
 
 			return recipeDto;
@@ -53,7 +54,8 @@ namespace RecipePlatform.Api.Services
 				{
 					Id = recipe.Id,
 					Name = recipe.Name,
-					Description = recipe.Description
+					Description = recipe.Description,
+					Version = recipe.Version
 				};
 
 			if (recipeDto is null)
@@ -83,7 +85,8 @@ namespace RecipePlatform.Api.Services
 				{
 					Id = recipe.Id,
 					Name = recipe.Name,
-					Description = recipe.Description
+					Description = recipe.Description,
+					Version = recipe.Version
 				})
 				.ToListAsync(cancellationToken);
 
@@ -125,13 +128,19 @@ namespace RecipePlatform.Api.Services
 				recipe.Description = updateRecipeRequest.Description;
 			}
 
+			_recipeDbContext.Entry(recipe)
+				.Property(existingRecipe => existingRecipe.Version)
+				.OriginalValue = updateRecipeRequest.Version;
+			recipe.Version = Guid.NewGuid();
+
 			await _recipeDbContext.SaveChangesAsync(cancellationToken);
 
 			var recipeDto = new RecipeDto()
 			{
 				Id = recipe.Id,
 				Name = recipe.Name,
-				Description = recipe.Description
+				Description = recipe.Description,
+				Version = recipe.Version
 			};
 
 			return recipeDto;

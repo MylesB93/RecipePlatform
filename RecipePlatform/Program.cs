@@ -137,16 +137,9 @@ app.MapPost(
 
 		var recipe = await recipeService.CreateRecipeAsync(request, cancellationToken);
 
-		var recipeDto = new RecipeDto
-		{
-			Id = recipe.Id,
-			Name = recipe.Name,
-			Description = recipe.Description
-		};
-
 		return Results.Created(
 			$"/api/recipes/{recipe.Id}",
-			recipeDto);
+			recipe);
 	})
 	.RequireAuthorization("RecipesWrite");
 
@@ -186,13 +179,33 @@ app.MapPut("/api/recipes/{id:guid}",
 		CancellationToken cancellationToken,
 		IRecipeService recipeService) =>
 	{
-		var recipe = await recipeService.UpdateRecipeAsync(updateRecipeRequest, id, cancellationToken);
-		if (recipe == null)
+		if (updateRecipeRequest.Version == Guid.Empty)
 		{
-			return Results.NotFound();
+			Log.Warning("Recipe update rejected because no version was supplied. {RecipeId}", id);
+			return Results.BadRequest(new
+			{
+				error = "A recipe version is required."
+			});
 		}
 
-		return Results.Ok(recipe);
+		try
+		{
+			var recipe = await recipeService.UpdateRecipeAsync(updateRecipeRequest, id, cancellationToken);
+			if (recipe == null)
+			{
+				return Results.NotFound();
+			}
+
+			return Results.Ok(recipe);
+		}
+		catch (DbUpdateConcurrencyException)
+		{
+			Log.Information("Recipe update rejected because the supplied version was stale. {RecipeId}", id);
+			return Results.Conflict(new
+			{
+				error = "The recipe was changed by another request. Retrieve the current recipe and try again."
+			});
+		}
 	})
 	.RequireAuthorization("RecipesWrite");
 
