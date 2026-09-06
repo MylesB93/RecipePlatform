@@ -162,14 +162,35 @@ app.MapDelete(
 	"/api/recipes/{id:guid}",
 	async (
 		Guid id,
+		Guid version,
 		CancellationToken cancellationToken,
 		IRecipeService recipeService) =>
 	{
-		var isValidRecipe = await recipeService.DeleteRecipeAsync(id, cancellationToken);
+		if (version == Guid.Empty)
+		{
+			Log.Warning("Recipe deletion rejected because no version was supplied. {RecipeId}", id);
+			return Results.BadRequest(new
+			{
+				error = "A recipe version is required."
+			});
+		}
 
-		return isValidRecipe ? 
-			Results.NoContent() : 
-			Results.NotFound();
+		try
+		{
+			var isValidRecipe = await recipeService.DeleteRecipeAsync(id, version, cancellationToken);
+
+			return isValidRecipe ?
+				Results.NoContent() :
+				Results.NotFound();
+		}
+		catch (DbUpdateConcurrencyException)
+		{
+			Log.Information("Recipe deletion rejected because the supplied version was stale. {RecipeId}", id);
+			return Results.Conflict(new
+			{
+				error = "The recipe was changed by another request. Retrieve the current recipe and try again."
+			});
+		}
 	})
 	.RequireAuthorization("RecipesWrite");
 

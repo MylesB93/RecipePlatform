@@ -61,7 +61,7 @@ public sealed class RecipeServiceTests
 		Recipe recipe = AddRecipe(dbContext, "Pancakes", "Fluffy pancakes");
 		var service = new RecipeService(dbContext);
 
-		bool result = await service.DeleteRecipeAsync(recipe.Id, CancellationToken.None);
+		bool result = await service.DeleteRecipeAsync(recipe.Id, recipe.Version, CancellationToken.None);
 
 		Assert.True(result);
 		Assert.Empty(await dbContext.Recipes.ToListAsync());
@@ -73,7 +73,7 @@ public sealed class RecipeServiceTests
 		await using RecipeDbContext dbContext = CreateDbContext();
 		var service = new RecipeService(dbContext);
 
-		bool result = await service.DeleteRecipeAsync(Guid.NewGuid(), CancellationToken.None);
+		bool result = await service.DeleteRecipeAsync(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
 
 		Assert.False(result);
 	}

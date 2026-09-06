@@ -93,7 +93,7 @@ namespace RecipePlatform.Api.Services
 			return result;
 		}
 
-		public async Task<bool> DeleteRecipeAsync(Guid id, CancellationToken cancellationToken)
+		public async Task<bool> DeleteRecipeAsync(Guid id, Guid version, CancellationToken cancellationToken)
 		{
 			var recipe = await _recipeDbContext.Recipes
 			.SingleOrDefaultAsync(
@@ -104,6 +104,11 @@ namespace RecipePlatform.Api.Services
 				Log.Information("Recipe could not be deleted because it was not found. {RecipeId}", id);
 				return false;
 			}
+
+			_recipeDbContext.Entry(recipe)
+				.Property(existingRecipe => existingRecipe.Version)
+				.OriginalValue = version;
+
 			_recipeDbContext.Recipes.Remove(recipe);
 			await _recipeDbContext.SaveChangesAsync(cancellationToken);
 			return true;
