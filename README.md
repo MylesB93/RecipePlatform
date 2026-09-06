@@ -42,10 +42,10 @@ RecipePlatform is a .NET 10 minimal API for creating, retrieving, updating, dele
 | --- | --- | --- |
 | `GET` | `/health` | Health check |
 | `GET` | `/api/recipes` | List recipes; supports `page`, `pageSize`, and `search` query parameters |
-| `POST` | `/api/recipes` | Create a recipe |
-| `GET` | `/api/recipes/{id}` | Get a recipe by ID |
-| `PUT` | `/api/recipes/{id}` | Update a recipe |
-| `DELETE` | `/api/recipes/{id}` | Delete a recipe |
+| `POST` | `/api/recipes` | Create a recipe and return its initial version |
+| `GET` | `/api/recipes/{id}` | Get a recipe by ID, including its version |
+| `PUT` | `/api/recipes/{id}` | Update a recipe using the version in the request body |
+| `DELETE` | `/api/recipes/{id}?version={version}` | Delete a recipe using its current version |
 
 Example request:
 
@@ -54,6 +54,28 @@ Invoke-RestMethod -Method Post -Uri http://localhost:5167/api/recipes `
   -ContentType "application/json" `
   -Body '{"name":"Chicken Curry","description":"A simple chicken curry recipe."}'
 ```
+
+## Optimistic concurrency
+
+Recipe responses include a `version` value. Clients must retain the version they received and send it when changing or deleting that recipe. This prevents a later request from silently overwriting another client's change.
+
+To update a recipe, include its current version in the request body:
+
+```json
+{
+  "name": "Chicken Curry",
+  "description": "Updated description.",
+  "version": "b6d8d57b-5b5e-4e2d-96cd-c70c92b3fb82"
+}
+```
+
+To delete a recipe, pass its current version as a query parameter:
+
+```text
+DELETE /api/recipes/{id}?version={version}
+```
+
+A successful update returns a new version. Requests without a version return `400 Bad Request`; requests with a stale version return `409 Conflict`. Retrieve the recipe again and retry using the latest version after a conflict.
 
 ## Tests
 
