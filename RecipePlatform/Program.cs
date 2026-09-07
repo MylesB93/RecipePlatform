@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RecipePlatform.Api.BackgroundJobs;
 using RecipePlatform.Api.Data;
 using RecipePlatform.Api.Data.DTOs;
 using RecipePlatform.Api.Interfaces;
@@ -88,6 +89,7 @@ if (!string.IsNullOrWhiteSpace(redisConnectionString))
 
 builder.Services.AddScoped<RecipeService>();
 builder.Services.AddScoped<IRecipeService, CachedRecipeService>();
+builder.Services.AddSingleton<IRecipeCacheWarmingQueue, RecipeCacheWarmingQueue>();
 
 var app = builder.Build();
 
