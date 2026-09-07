@@ -8,4 +8,13 @@ public sealed class RecipeDbContext(
 	: DbContext(options)
 {
 	public DbSet<Recipe> Recipes => Set<Recipe>();
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.Entity<Recipe>()
+			.Property(recipe => recipe.Version)
+			.IsConcurrencyToken();
+
+		base.OnModelCreating(modelBuilder);
+	}
 }

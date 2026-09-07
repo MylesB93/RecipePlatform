@@ -124,7 +124,7 @@ public sealed class RecipeEndpointsTests
 		var deletedRecipe = await createResponse.Content.ReadFromJsonAsync<RecipeResponse>();
 
 		// Act delete recipe
-		var deletedResponse = await _client.DeleteAsync($"/api/recipes/{deletedRecipe?.Id}");
+		var deletedResponse = await _client.DeleteAsync($"/api/recipes/{deletedRecipe?.Id}?version={deletedRecipe?.Version}");
 
 		// Assert
 		Assert.Equal(HttpStatusCode.NoContent, deletedResponse.StatusCode);
@@ -151,7 +151,7 @@ public sealed class RecipeEndpointsTests
 		// Arrange
 		var recipe = await createResponse.Content.ReadFromJsonAsync<RecipeResponse>();
 		var updateDescription = "This is an updated recipe.";
-		var updateRequest = new UpdateRecipeRequest("", updateDescription);
+		var updateRequest = new UpdateRecipeRequest("", updateDescription, recipe?.Version ?? Guid.Empty);
 
 		// Act
 		var updateResponse = await _client.PutAsJsonAsync($"/api/recipes/{recipe?.Id}", updateRequest);
@@ -175,6 +175,48 @@ public sealed class RecipeEndpointsTests
 		Assert.NotNull(persistedRecipe);
 		Assert.Equal(recipe?.Name, persistedRecipe.Name);
 		Assert.Equal(updateDescription, persistedRecipe.Description);
+	}
+
+	[Fact]
+	public async Task UpdateRecipe_WithStaleVersion_Returns409Conflict()
+	{
+		var createResponse = await _client.PostAsJsonAsync(
+			"/api/recipes",
+			new CreateRecipeRequest("New Recipe", "This is a new recipe"));
+		var recipe = await createResponse.Content.ReadFromJsonAsync<RecipeResponse>();
+
+		Assert.NotNull(recipe);
+
+		var firstUpdate = new UpdateRecipeRequest("First update", recipe.Description, recipe.Version);
+		var firstUpdateResponse = await _client.PutAsJsonAsync($"/api/recipes/{recipe.Id}", firstUpdate);
+
+		Assert.Equal(HttpStatusCode.OK, firstUpdateResponse.StatusCode);
+
+		var staleUpdate = new UpdateRecipeRequest("Stale update", recipe.Description, recipe.Version);
+		var staleUpdateResponse = await _client.PutAsJsonAsync($"/api/recipes/{recipe.Id}", staleUpdate);
+
+		Assert.Equal(HttpStatusCode.Conflict, staleUpdateResponse.StatusCode);
+	}
+
+	[Fact]
+	public async Task DeleteRecipe_WithStaleVersion_Returns409Conflict()
+	{
+		var createResponse = await _client.PostAsJsonAsync(
+			"/api/recipes",
+			new CreateRecipeRequest("New Recipe", "This is a new recipe"));
+		var recipe = await createResponse.Content.ReadFromJsonAsync<RecipeResponse>();
+
+		Assert.NotNull(recipe);
+
+		var updateResponse = await _client.PutAsJsonAsync(
+			$"/api/recipes/{recipe.Id}",
+			new UpdateRecipeRequest("Updated Recipe", recipe.Description, recipe.Version));
+
+		Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
+
+		var deleteResponse = await _client.DeleteAsync($"/api/recipes/{recipe.Id}?version={recipe.Version}");
+
+		Assert.Equal(HttpStatusCode.Conflict, deleteResponse.StatusCode);
 	}
 
 	[Fact]

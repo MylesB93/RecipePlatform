@@ -61,7 +61,7 @@ public sealed class RecipeServiceTests
 		Recipe recipe = AddRecipe(dbContext, "Pancakes", "Fluffy pancakes");
 		var service = new RecipeService(dbContext);
 
-		bool result = await service.DeleteRecipeAsync(recipe.Id, CancellationToken.None);
+		bool result = await service.DeleteRecipeAsync(recipe.Id, recipe.Version, CancellationToken.None);
 
 		Assert.True(result);
 		Assert.Empty(await dbContext.Recipes.ToListAsync());
@@ -73,7 +73,7 @@ public sealed class RecipeServiceTests
 		await using RecipeDbContext dbContext = CreateDbContext();
 		var service = new RecipeService(dbContext);
 
-		bool result = await service.DeleteRecipeAsync(Guid.NewGuid(), CancellationToken.None);
+		bool result = await service.DeleteRecipeAsync(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
 
 		Assert.False(result);
 	}
@@ -84,9 +84,10 @@ public sealed class RecipeServiceTests
 		await using RecipeDbContext dbContext = CreateDbContext();
 		Recipe recipe = AddRecipe(dbContext, "Pancakes", "Fluffy pancakes");
 		var service = new RecipeService(dbContext);
+		Guid originalVersion = recipe.Version;
 
 		RecipeDto? result = await service.UpdateRecipeAsync(
-			new UpdateRecipeRequest("Waffles", "Crispy waffles"),
+			new UpdateRecipeRequest("Waffles", "Crispy waffles", originalVersion),
 			recipe.Id,
 			CancellationToken.None);
 
@@ -98,6 +99,7 @@ public sealed class RecipeServiceTests
 		Recipe persistedRecipe = await dbContext.Recipes.SingleAsync();
 		Assert.Equal("Waffles", persistedRecipe.Name);
 		Assert.Equal("Crispy waffles", persistedRecipe.Description);
+		Assert.NotEqual(originalVersion, result.Version);
 	}
 
 	[Fact]
@@ -108,7 +110,7 @@ public sealed class RecipeServiceTests
 		var service = new RecipeService(dbContext);
 
 		RecipeDto? result = await service.UpdateRecipeAsync(
-			new UpdateRecipeRequest(" ", " "),
+			new UpdateRecipeRequest(" ", " ", recipe.Version),
 			recipe.Id,
 			CancellationToken.None);
 
@@ -124,7 +126,7 @@ public sealed class RecipeServiceTests
 		var service = new RecipeService(dbContext);
 
 		RecipeDto? result = await service.UpdateRecipeAsync(
-			new UpdateRecipeRequest("Pancakes", "Fluffy pancakes"),
+			new UpdateRecipeRequest("Pancakes", "Fluffy pancakes", Guid.NewGuid()),
 			Guid.NewGuid(),
 			CancellationToken.None);
 

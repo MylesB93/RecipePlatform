@@ -7,4 +7,6 @@ public sealed class Recipe
 	public required string Name { get; set; }
 
 	public string? Description { get; set; }
+
+	public Guid Version { get; set; } = Guid.NewGuid();
 }

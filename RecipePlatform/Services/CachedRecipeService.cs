@@ -53,9 +53,9 @@ public sealed class CachedRecipeService(
 		return recipes;
 	}
 
-	public async Task<bool> DeleteRecipeAsync(Guid id, CancellationToken cancellationToken)
+	public async Task<bool> DeleteRecipeAsync(Guid id, Guid version, CancellationToken cancellationToken)
 	{
-		bool deleted = await recipeService.DeleteRecipeAsync(id, cancellationToken);
+		bool deleted = await recipeService.DeleteRecipeAsync(id, version, cancellationToken);
 		if (!deleted) return false;
 
 		try { await cache.RemoveAsync(RecipeKey(id), cancellationToken); }
