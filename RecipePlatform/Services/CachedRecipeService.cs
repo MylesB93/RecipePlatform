@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using RecipePlatform.Api.BackgroundJobs;
 using RecipePlatform.Api.Data.DTOs;
 using RecipePlatform.Api.Interfaces;
 using RecipePlatform.Api.Models;
@@ -9,7 +10,8 @@ namespace RecipePlatform.Api.Services;
 
 public sealed class CachedRecipeService(
 	RecipeService recipeService,
-	IDistributedCache cache) : IRecipeService
+	IDistributedCache cache,
+	IRecipeCacheWarmingQueue cacheWarmingQueue) : IRecipeService
 {
 	private const string ListGenerationKey = "recipes:list:generation";
 	private static readonly DistributedCacheEntryOptions RecipeCacheOptions = new()
@@ -74,6 +76,12 @@ public sealed class CachedRecipeService(
 
 		await SetAsync(RecipeKey(id), recipe, RecipeCacheOptions, cancellationToken);
 		await InvalidateListsAsync(cancellationToken);
+
+		if (!cacheWarmingQueue.TryEnqueue(new RecipeCacheWarmingJob(recipe.Id, recipe.Version)))
+		{
+			Log.Warning("Recipe cache warming job was not queued because the queue is full. {RecipeId} {RecipeVersion}", recipe.Id, recipe.Version);
+		}
+
 		return recipe;
 	}
 
