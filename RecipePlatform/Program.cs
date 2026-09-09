@@ -90,6 +90,7 @@ if (!string.IsNullOrWhiteSpace(redisConnectionString))
 builder.Services.AddScoped<RecipeService>();
 builder.Services.AddScoped<IRecipeService, CachedRecipeService>();
 builder.Services.AddSingleton<IRecipeCacheWarmingQueue, RecipeCacheWarmingQueue>();
+builder.Services.AddHostedService<RecipeCacheWarmingWorker>();
 
 var app = builder.Build();
 
