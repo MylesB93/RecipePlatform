@@ -99,6 +99,8 @@ Recipe reads use Redis with a cache-aside strategy. Individual recipes are cache
 
 Set `ConnectionStrings__Redis` to override the Redis connection string. When the API runs through Docker Compose, it uses the included `redis` service automatically.
 
+Cache-warming jobs use an in-memory queue with a default capacity of 100. Set `BackgroundJobs__RecipeCacheWarming__QueueCapacity` to change that limit; a full queue logs a warning and does not fail the recipe update.
+
 ## Logging
 
 The API writes structured JSON logs to standard output with Serilog. Request completion, rejected recipe creation requests, missing recipes, cache activity, and unhandled failures include structured properties suitable for container log collection.
