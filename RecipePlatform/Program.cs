@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RecipePlatform.Api.BackgroundJobs;
 using RecipePlatform.Api.Data;
 using RecipePlatform.Api.Data.DTOs;
 using RecipePlatform.Api.Interfaces;
@@ -88,6 +89,13 @@ if (!string.IsNullOrWhiteSpace(redisConnectionString))
 
 builder.Services.AddScoped<RecipeService>();
 builder.Services.AddScoped<IRecipeService, CachedRecipeService>();
+builder.Services
+	.AddOptions<RecipeCacheWarmingOptions>()
+	.BindConfiguration(RecipeCacheWarmingOptions.SectionName)
+	.Validate(options => options.QueueCapacity > 0, "Queue capacity must be greater than zero.")
+	.ValidateOnStart();
+builder.Services.AddSingleton<IRecipeCacheWarmingQueue, RecipeCacheWarmingQueue>();
+builder.Services.AddHostedService<RecipeCacheWarmingWorker>();
 
 var app = builder.Build();
 

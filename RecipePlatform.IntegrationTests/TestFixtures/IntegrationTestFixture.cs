@@ -30,6 +30,9 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 
 	public HttpClient Client { get; private set; } = null!;
 
+	public IDistributedCache DistributedCache =>
+		_factory!.Services.GetRequiredService<IDistributedCache>();
+
 	public async Task InitializeAsync()
 	{
 		await _postgresContainer.StartAsync();

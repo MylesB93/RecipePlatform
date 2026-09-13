@@ -1,6 +1,8 @@
 ﻿using RecipePlatform.Api.Models;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace RecipePlatform.IntegrationTests.Tests;
 
@@ -199,6 +201,34 @@ public sealed class RecipeEndpointsTests
 	}
 
 	[Fact]
+	public async Task UpdateRecipe_WarmsDefaultRecipeListCacheInBackground()
+	{
+		HttpResponseMessage createResponse = await _client.PostAsJsonAsync(
+			"/api/recipes",
+			new CreateRecipeRequest("Pancakes", "Fluffy pancakes"));
+		RecipeResponse? recipe = await createResponse.Content.ReadFromJsonAsync<RecipeResponse>();
+
+		Assert.NotNull(recipe);
+		Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
+
+		HttpResponseMessage initialListResponse = await _client.GetAsync("/api/recipes");
+		Assert.Equal(HttpStatusCode.OK, initialListResponse.StatusCode);
+
+		const string updatedDescription = "Fluffy blueberry pancakes";
+		HttpResponseMessage updateResponse = await _client.PutAsJsonAsync(
+			$"/api/recipes/{recipe.Id}",
+			new UpdateRecipeRequest(recipe.Name, updatedDescription, recipe.Version));
+
+		Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
+
+		List<RecipeResponse>? warmedRecipes = await WaitForDefaultListCacheAsync();
+
+		RecipeResponse warmedRecipe = Assert.Single(warmedRecipes!);
+		Assert.Equal(recipe.Id, warmedRecipe.Id);
+		Assert.Equal(updatedDescription, warmedRecipe.Description);
+	}
+
+	[Fact]
 	public async Task DeleteRecipe_WithStaleVersion_Returns409Conflict()
 	{
 		var createResponse = await _client.PostAsJsonAsync(
@@ -338,5 +368,29 @@ public sealed class RecipeEndpointsTests
 
 			response.EnsureSuccessStatusCode();
 		}
+	}
+
+	private async Task<List<RecipeResponse>?> WaitForDefaultListCacheAsync()
+	{
+		IDistributedCache cache = _fixture.DistributedCache;
+		DateTimeOffset timeout = DateTimeOffset.UtcNow.AddSeconds(5);
+
+		while (DateTimeOffset.UtcNow < timeout)
+		{
+			string? generation = await cache.GetStringAsync("recipes:list:generation");
+			if (generation is not null)
+			{
+				string cacheKey = $"recipes:list:{generation}:1:10:";
+				string? cachedValue = await cache.GetStringAsync(cacheKey);
+				if (cachedValue is not null)
+				{
+					return JsonSerializer.Deserialize<List<RecipeResponse>>(cachedValue);
+				}
+			}
+
+			await Task.Delay(TimeSpan.FromMilliseconds(100));
+		}
+
+		return null;
 	}
 }
