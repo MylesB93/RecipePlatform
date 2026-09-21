@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RecipePlatform.Api.BackgroundJobs;
 using RecipePlatform.Api.Data;
 using RecipePlatform.Api.Data.DTOs;
+using RecipePlatform.Api.ExternalRecipes;
 using RecipePlatform.Api.Interfaces;
 using RecipePlatform.Api.Models;
 using RecipePlatform.Api.Services;
@@ -89,6 +90,19 @@ if (!string.IsNullOrWhiteSpace(redisConnectionString))
 
 builder.Services.AddScoped<RecipeService>();
 builder.Services.AddScoped<IRecipeService, CachedRecipeService>();
+
+builder.Services
+	.AddOptions<TheMealDbOptions>()
+	.BindConfiguration(TheMealDbOptions.SectionName)
+	.Validate(options => Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out _), "Base URL must be an absolute URI.")
+	.Validate(options => !string.IsNullOrWhiteSpace(options.ApiKey), "API key is required.")
+	.ValidateOnStart();
+builder.Services.AddHttpClient<ITheMealDbClient, TheMealDbClient>((services, client) =>
+{
+	TheMealDbOptions options = services.GetRequiredService<Microsoft.Extensions.Options.IOptions<TheMealDbOptions>>().Value;
+	client.BaseAddress = new Uri($"{options.BaseUrl.TrimEnd('/')}/{options.ApiKey.Trim()}/");
+});
+
 builder.Services
 	.AddOptions<RecipeCacheWarmingOptions>()
 	.BindConfiguration(RecipeCacheWarmingOptions.SectionName)
