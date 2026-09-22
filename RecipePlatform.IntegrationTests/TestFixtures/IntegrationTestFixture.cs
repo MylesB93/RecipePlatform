@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RecipePlatform.Api.Data;
+using RecipePlatform.Api.Interfaces;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 
@@ -57,6 +58,9 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 
 				builder.ConfigureTestServices(services =>
 				{
+					services.RemoveAll<IExternalRecipeSearchService>();
+					services.AddScoped<IExternalRecipeSearchService, TestExternalRecipeSearchService>();
+
 					services.AddAuthentication(options =>
 					{
 						options.DefaultAuthenticateScheme = TestAuthenticationHandler.SchemeName;

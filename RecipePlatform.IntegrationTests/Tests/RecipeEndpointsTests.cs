@@ -1,4 +1,5 @@
 ﻿using RecipePlatform.Api.Models;
+using RecipePlatform.Api.Data.DTOs;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Net;
 using System.Net.Http.Json;
@@ -94,6 +95,34 @@ public sealed class RecipeEndpointsTests
 
 		// Assert
 		Assert.Equal(HttpStatusCode.NotFound, responseMessage.StatusCode);
+	}
+
+	[Fact]
+	public async Task SearchExternalRecipes_WithName_ReturnsProviderSearchResults()
+	{
+		HttpResponseMessage response = await _client.GetAsync("/api/external-recipes/search?name=Arrabiata");
+
+		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+		List<ExternalRecipeSearchResult>? results = await response.Content.ReadFromJsonAsync<List<ExternalRecipeSearchResult>>();
+		ExternalRecipeSearchResult result = Assert.Single(results!);
+		Assert.Equal("test-meal", result.ExternalId);
+		Assert.Equal("Arrabiata meal", result.Name);
+	}
+
+	[Fact]
+	public async Task SearchExternalRecipes_WithoutName_Returns400BadRequest()
+	{
+		HttpResponseMessage response = await _client.GetAsync("/api/external-recipes/search");
+
+		Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+	}
+
+	[Fact]
+	public async Task SearchExternalRecipes_WhenProviderFails_Returns502BadGateway()
+	{
+		HttpResponseMessage response = await _client.GetAsync("/api/external-recipes/search?name=provider-failure");
+
+		Assert.Equal(HttpStatusCode.BadGateway, response.StatusCode);
 	}
 
 	[Fact]

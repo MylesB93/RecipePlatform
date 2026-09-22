@@ -142,6 +142,34 @@ app.MapGet(
 	})
 	.RequireAuthorization("RecipesRead");
 
+app.MapGet(
+	"/api/external-recipes/search",
+	async (
+		string? name,
+		IExternalRecipeSearchService externalRecipeSearchService,
+		CancellationToken cancellationToken) =>
+	{
+		if (string.IsNullOrWhiteSpace(name))
+		{
+			Log.Warning("External recipe search rejected because the name was blank.");
+			return Results.BadRequest(new { error = "A recipe name is required." });
+		}
+
+		try
+		{
+			var recipes = await externalRecipeSearchService.SearchAsync(name.Trim(), cancellationToken);
+			return Results.Ok(recipes);
+		}
+		catch (HttpRequestException exception)
+		{
+			Log.Warning(exception, "External recipe search failed. {RecipeName}", name);
+			return Results.Problem(
+				statusCode: StatusCodes.Status502BadGateway,
+				title: "The recipe provider could not be reached.");
+		}
+	})
+	.RequireAuthorization("RecipesRead");
+
 app.MapPost(
 	"/api/recipes",
 	async (
