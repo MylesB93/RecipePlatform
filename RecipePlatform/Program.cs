@@ -90,7 +90,8 @@ if (!string.IsNullOrWhiteSpace(redisConnectionString))
 
 builder.Services.AddScoped<RecipeService>();
 builder.Services.AddScoped<IRecipeService, CachedRecipeService>();
-builder.Services.AddScoped<IExternalRecipeSearchService, ExternalRecipeSearchService>();
+builder.Services.AddScoped<ExternalRecipeSearchService>();
+builder.Services.AddScoped<IExternalRecipeSearchService, CachedExternalRecipeSearchService>();
 
 builder.Services
 	.AddOptions<TheMealDbOptions>()
