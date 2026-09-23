@@ -1,6 +1,8 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 using RecipePlatform.Api.Data.DTOs;
+using RecipePlatform.Api.ExternalRecipes;
 using RecipePlatform.Api.Interfaces;
 using Serilog;
 
@@ -8,11 +10,12 @@ namespace RecipePlatform.Api.Services;
 
 public sealed class CachedExternalRecipeSearchService(
 	ExternalRecipeSearchService externalRecipeSearchService,
-	IDistributedCache cache) : IExternalRecipeSearchService
+	IDistributedCache cache,
+	IOptions<TheMealDbOptions> options) : IExternalRecipeSearchService
 {
-	private static readonly DistributedCacheEntryOptions CacheOptions = new()
+	private readonly DistributedCacheEntryOptions _cacheOptions = new()
 	{
-		AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+		AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(options.Value.SearchCacheDurationMinutes)
 	};
 
 	public async Task<IReadOnlyList<ExternalRecipeSearchResult>> SearchAsync(string name, CancellationToken cancellationToken)
@@ -46,7 +49,7 @@ public sealed class CachedExternalRecipeSearchService(
 	{
 		try
 		{
-			await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(results), CacheOptions, cancellationToken);
+			await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(results), _cacheOptions, cancellationToken);
 		}
 		catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
 		{

@@ -15,7 +15,12 @@ public sealed class CachedExternalRecipeSearchServiceTests
 		var mealDbClient = new CountingMealDbClient();
 		var service = new CachedExternalRecipeSearchService(
 			new ExternalRecipeSearchService(mealDbClient),
-			CreateCache());
+			CreateCache(),
+			Options.Create(new TheMealDbOptions
+			{
+				BaseUrl = "https://www.themealdb.com/api/json/v1",
+				ApiKey = "test-key"
+			}));
 
 		IReadOnlyList<ExternalRecipeSearchResult> firstResults = await service.SearchAsync("Arrabiata", CancellationToken.None);
 		IReadOnlyList<ExternalRecipeSearchResult> secondResults = await service.SearchAsync(" arrabiata ", CancellationToken.None);

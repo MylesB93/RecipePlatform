@@ -101,6 +101,12 @@ Set `ConnectionStrings__Redis` to override the Redis connection string. When the
 
 Cache-warming jobs use an in-memory queue with a default capacity of 100. Set `BackgroundJobs__RecipeCacheWarming__QueueCapacity` to change that limit; a full queue logs a warning and does not fail the recipe update.
 
+## External recipe search
+
+`GET /api/external-recipes/search?name={name}` searches TheMealDB and requires the `recipes.read` scope. Search results are cached for five minutes. Set `TheMealDb__SearchCacheDurationMinutes` to change that duration; it must be greater than zero.
+
+The committed `TheMealDb:ApiKey` value of `1` is TheMealDB's development key. For a deployed application, override it with `TheMealDb__ApiKey` from a secret store or deployment environment variable.
+
 ## Logging
 
 The API writes structured JSON logs to standard output with Serilog. Request completion, rejected recipe creation requests, missing recipes, cache activity, and unhandled failures include structured properties suitable for container log collection.

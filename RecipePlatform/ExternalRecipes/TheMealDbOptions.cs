@@ -7,4 +7,6 @@ public sealed class TheMealDbOptions
 	public required string BaseUrl { get; init; }
 
 	public required string ApiKey { get; init; }
+
+	public int SearchCacheDurationMinutes { get; init; } = 5;
 }

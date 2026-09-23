@@ -98,6 +98,7 @@ builder.Services
 	.BindConfiguration(TheMealDbOptions.SectionName)
 	.Validate(options => Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out _), "Base URL must be an absolute URI.")
 	.Validate(options => !string.IsNullOrWhiteSpace(options.ApiKey), "API key is required.")
+	.Validate(options => options.SearchCacheDurationMinutes > 0, "Search cache duration must be greater than zero.")
 	.ValidateOnStart();
 builder.Services.AddHttpClient<ITheMealDbClient, TheMealDbClient>((services, client) =>
 {
