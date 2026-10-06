@@ -37,5 +37,8 @@ public sealed class ExternalRecipeSearchServiceTests
 			SearchTerm = name;
 			return Task.FromResult(meals);
 		}
+
+		public Task<TheMealDbMealDetails?> LookupMealAsync(string id, CancellationToken cancellationToken) =>
+			throw new NotSupportedException();
 	}
 }

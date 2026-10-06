@@ -45,5 +45,8 @@ public sealed class CachedExternalRecipeSearchServiceTests
 				new TheMealDbMeal { Id = "52771", Name = "Spicy Arrabiata Penne" }
 			]);
 		}
+
+		public Task<TheMealDbMealDetails?> LookupMealAsync(string id, CancellationToken cancellationToken) =>
+			throw new NotSupportedException();
 	}
 }

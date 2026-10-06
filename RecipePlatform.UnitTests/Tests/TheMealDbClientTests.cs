@@ -26,6 +26,29 @@ public sealed class TheMealDbClientTests
 		Assert.Equal("/api/json/v1/1/search.php?s=Spicy%20Arrabiata", handler.RequestUri!.PathAndQuery);
 	}
 
+	[Fact]
+	public async Task LookupMealAsync_WhenMealDbReturnsMeal_ReturnsDetailedMeal()
+	{
+		var handler = new StubHttpMessageHandler("""
+			{"meals":[{"idMeal":"52771","strMeal":"Spicy Arrabiata Penne","strCategory":"Vegetarian","strArea":"Italian","strInstructions":"Cook pasta.","strIngredient1":"penne rigate","strMeasure1":"1 pound"}]}
+			""");
+		var client = new TheMealDbClient(new HttpClient(handler)
+		{
+			BaseAddress = new Uri("https://www.themealdb.com/api/json/v1/1/")
+		});
+
+		TheMealDbMealDetails? meal = await client.LookupMealAsync("52771", CancellationToken.None);
+
+		Assert.NotNull(meal);
+		Assert.Equal("52771", meal.Id);
+		Assert.Equal("Vegetarian", meal.Category);
+		Assert.Equal("Italian", meal.Area);
+		Assert.Equal("Cook pasta.", meal.Instructions);
+		Assert.Equal("penne rigate", meal.AdditionalProperties!["strIngredient1"].GetString());
+		Assert.Equal("1 pound", meal.AdditionalProperties["strMeasure1"].GetString());
+		Assert.Equal("/api/json/v1/1/lookup.php?i=52771", handler.RequestUri!.PathAndQuery);
+	}
+
 	private sealed class StubHttpMessageHandler(string content) : HttpMessageHandler
 	{
 		public Uri? RequestUri { get; private set; }

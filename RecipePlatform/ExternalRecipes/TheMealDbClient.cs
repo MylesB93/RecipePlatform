@@ -14,4 +14,15 @@ public sealed class TheMealDbClient(HttpClient httpClient) : ITheMealDbClient
 		TheMealDbSearchResponse? searchResponse = await response.Content.ReadFromJsonAsync<TheMealDbSearchResponse>(cancellationToken);
 		return searchResponse?.Meals ?? [];
 	}
+
+	public async Task<TheMealDbMealDetails?> LookupMealAsync(string id, CancellationToken cancellationToken)
+	{
+		using HttpResponseMessage response = await httpClient.GetAsync(
+			$"lookup.php?i={Uri.EscapeDataString(id)}",
+			cancellationToken);
+		response.EnsureSuccessStatusCode();
+
+		TheMealDbLookupResponse? lookupResponse = await response.Content.ReadFromJsonAsync<TheMealDbLookupResponse>(cancellationToken);
+		return lookupResponse?.Meals?.FirstOrDefault();
+	}
 }
