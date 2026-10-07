@@ -92,6 +92,7 @@ builder.Services.AddScoped<RecipeService>();
 builder.Services.AddScoped<IRecipeService, CachedRecipeService>();
 builder.Services.AddScoped<ExternalRecipeSearchService>();
 builder.Services.AddScoped<IExternalRecipeSearchService, CachedExternalRecipeSearchService>();
+builder.Services.AddScoped<IExternalRecipeLookupService, ExternalRecipeLookupService>();
 
 builder.Services
 	.AddOptions<TheMealDbOptions>()
