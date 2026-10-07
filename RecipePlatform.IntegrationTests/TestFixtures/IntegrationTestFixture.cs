@@ -60,6 +60,8 @@ public sealed class IntegrationTestFixture : IAsyncLifetime
 				{
 					services.RemoveAll<IExternalRecipeSearchService>();
 					services.AddScoped<IExternalRecipeSearchService, TestExternalRecipeSearchService>();
+					services.RemoveAll<IExternalRecipeLookupService>();
+					services.AddScoped<IExternalRecipeLookupService, TestExternalRecipeLookupService>();
 
 					services.AddAuthentication(options =>
 					{

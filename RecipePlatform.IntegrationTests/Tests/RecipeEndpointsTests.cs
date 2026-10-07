@@ -126,6 +126,35 @@ public sealed class RecipeEndpointsTests
 	}
 
 	[Fact]
+	public async Task GetExternalRecipe_WithKnownId_ReturnsDetailedRecipe()
+	{
+		HttpResponseMessage response = await _client.GetAsync("/api/external-recipes/test-meal");
+
+		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+		ExternalRecipeDetails? recipe = await response.Content.ReadFromJsonAsync<ExternalRecipeDetails>();
+		Assert.NotNull(recipe);
+		Assert.Equal("test-meal", recipe.ExternalId);
+		Assert.Equal("Spicy Arrabiata Penne", recipe.Name);
+		Assert.Equal(new ExternalRecipeIngredient("penne rigate", "1 pound"), Assert.Single(recipe.Ingredients));
+	}
+
+	[Fact]
+	public async Task GetExternalRecipe_WithUnknownId_Returns404NotFound()
+	{
+		HttpResponseMessage response = await _client.GetAsync("/api/external-recipes/not-found");
+
+		Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+	}
+
+	[Fact]
+	public async Task GetExternalRecipe_WhenProviderFails_Returns502BadGateway()
+	{
+		HttpResponseMessage response = await _client.GetAsync("/api/external-recipes/provider-failure");
+
+		Assert.Equal(HttpStatusCode.BadGateway, response.StatusCode);
+	}
+
+	[Fact]
 	public async Task PostRecipe_WithNoName_Returns400()
 	{
 		// Arrange

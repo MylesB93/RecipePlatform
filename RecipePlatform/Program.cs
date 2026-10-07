@@ -173,6 +173,28 @@ app.MapGet(
 	})
 	.RequireAuthorization("RecipesRead");
 
+app.MapGet(
+	"/api/external-recipes/{externalId}",
+	async (
+		string externalId,
+		IExternalRecipeLookupService externalRecipeLookupService,
+		CancellationToken cancellationToken) =>
+	{
+		try
+		{
+			var recipe = await externalRecipeLookupService.LookupAsync(externalId, cancellationToken);
+			return recipe is null ? Results.NotFound() : Results.Ok(recipe);
+		}
+		catch (HttpRequestException exception)
+		{
+			Log.Warning(exception, "External recipe lookup failed. {ExternalRecipeId}", externalId);
+			return Results.Problem(
+				statusCode: StatusCodes.Status502BadGateway,
+				title: "The recipe provider could not be reached.");
+		}
+	})
+	.RequireAuthorization("RecipesRead");
+
 app.MapPost(
 	"/api/recipes",
 	async (
